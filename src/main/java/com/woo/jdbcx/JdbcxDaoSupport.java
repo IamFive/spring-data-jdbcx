@@ -19,12 +19,15 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.KeyHolder;
 
 /**
+ * Extends Named-Query-JDBC-Template with more friendly API
+ * 
  * @author Woo Cupid
  * @date 2016年1月21日
  * @version $Revision$
@@ -148,11 +151,18 @@ public abstract class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 				keyColumnNames);
 	}
 
-	public int[] batchUpdate(String sql, Map<String, ?>[] batchValues) {
-		return jdbcTemplate.batchUpdate(sql, batchValues);
+	@SafeVarargs
+	public final int[] batchUpdate(String sql, Map<String, ?>... batchValues) {
+		SqlParameterSource[] batchArgs = new SqlParameterSource[batchValues.length];
+		int i = 0;
+		for (Map<String, ?> values : batchValues) {
+			batchArgs[i] = new MapSqlParameterSource(values);
+			i++;
+		}
+		return jdbcTemplate.batchUpdate(sql, batchArgs);
 	}
 
-	public int[] batchUpdate(String sql, Object... batchArgs) {
+	public final int[] batchUpdate(String sql, Object... batchArgs) {
 		SqlParameterSource[] params = new SqlParameterSource[batchArgs.length];
 		for (int i = 0; i < batchArgs.length; i++) {
 			params[i] = new BeanPropertySqlParameterSource(batchArgs[i]);

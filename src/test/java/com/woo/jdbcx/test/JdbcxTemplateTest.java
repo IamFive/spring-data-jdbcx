@@ -98,4 +98,23 @@ public class JdbcxTemplateTest {
 		Assert.assertNull(member.getId());
 	}
 
+	@Test
+	public void testBatchUpdate() {
+
+		Map<String, Object> record1 = new HashMap<String, Object>();
+		record1.put("id", 1);
+		record1.put("name", "woo2");
+
+		Map<String, Object> record2 = new HashMap<String, Object>();
+		record2.put("id", 2);
+		record2.put("name", "Five2");
+
+		int[] batchUpdate = jdbc.batchUpdate("update member set name = :name where id = :id", record1, record2);
+		Assert.assertArrayEquals(batchUpdate, new int[] { 1, 1 });
+
+		List<String> nameList = jdbc.queryForList("select name from member", String.class);
+		Assert.assertArrayEquals(nameList.toArray(), new String[] { "woo2", "Five2" });
+
+	}
+
 }
