@@ -16,6 +16,7 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource;
@@ -49,6 +50,16 @@ public abstract class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 
 	public <T> List<T> queryForListBean(String sql, Map<String, ?> paramMap, Class<T> mapResultToClass)
 			throws DataAccessException {
+		return jdbcTemplate.query(sql, paramMap, new BeanPropertyRowMapper<T>(mapResultToClass));
+	}
+
+	public <T> List<T> queryForListBean(String sql, Map<String, ?> paramMap, Class<T> mapResultToClass,
+			Pageable pageable)
+			throws DataAccessException {
+		// TODO
+		// 1. get count sql
+		// 2. get pageable sql
+
 		return jdbcTemplate.query(sql, paramMap, new BeanPropertyRowMapper<T>(mapResultToClass));
 	}
 
