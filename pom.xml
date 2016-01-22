@@ -69,18 +69,20 @@
 			<scope>runtime</scope>
 		</dependency>
 		
-		<!-- database -->
+		<!-- database 
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>9.4-1205-jdbc41</version>
 			<scope>test</scope>
 		</dependency>
+		-->
 		<dependency>
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
 	</dependencies>
 
 	<build>

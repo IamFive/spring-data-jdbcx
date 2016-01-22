@@ -42,7 +42,6 @@ public abstract class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 		jdbcTemplate = getNamedParameterJdbcTemplate();
 	}
 
-
 	// ============================ multiply fields returned =====================//
 
 	public <T> List<T> queryForListBean(String sql, Map<String, ?> paramMap, Class<T> mapResultToClass)
@@ -58,6 +57,22 @@ public abstract class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 
 	public <T> List<T> queryForListBean(String sql, Class<T> mapResultToClass) throws DataAccessException {
 		return jdbcTemplate.query(sql, new BeanPropertyRowMapper<T>(mapResultToClass));
+	}
+
+	public <T> T queryForBean(String sql, Object beanParamSource, Class<T> mapResultToClass)
+			throws DataAccessException {
+		return jdbcTemplate.queryForObject(sql, new BeanPropertySqlParameterSource(beanParamSource),
+				new BeanPropertyRowMapper<T>(mapResultToClass));
+	}
+
+	public <T> T queryForBean(String sql, Map<String, ?> paramMap, Class<T> mapResultToClass)
+			throws DataAccessException {
+		return jdbcTemplate.queryForObject(sql, paramMap, new BeanPropertyRowMapper<T>(mapResultToClass));
+	}
+
+	public <T> T queryForBean(String sql, Class<T> mapResultToClass) throws DataAccessException {
+		return jdbcTemplate.queryForObject(sql, EmptySqlParameterSource.INSTANCE,
+				new BeanPropertyRowMapper<T>(mapResultToClass));
 	}
 
 	public Map<String, Object> queryForMap(String sql, Object beanParamSource) throws DataAccessException {
@@ -85,7 +100,6 @@ public abstract class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 	}
 
 	// ============================ multiply fields returned =====================//
-
 
 	// ============================ single field returned =====================//
 	public <T> T queryForObject(String sql, Class<T> requiredType) throws DataAccessException {
@@ -116,9 +130,6 @@ public abstract class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 
 	// ============================ single field returned =====================//
 
-
-
-
 	public int update(String sql, Object beanParamSource) throws DataAccessException {
 		return jdbcTemplate.update(sql, new BeanPropertySqlParameterSource(beanParamSource));
 	}
@@ -127,8 +138,7 @@ public abstract class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 		return jdbcTemplate.update(sql, paramMap);
 	}
 
-	public int update(String sql, Object beanParamSource, KeyHolder generatedKeyHolder)
-			throws DataAccessException {
+	public int update(String sql, Object beanParamSource, KeyHolder generatedKeyHolder) throws DataAccessException {
 		return jdbcTemplate.update(sql, new BeanPropertySqlParameterSource(beanParamSource), generatedKeyHolder);
 	}
 

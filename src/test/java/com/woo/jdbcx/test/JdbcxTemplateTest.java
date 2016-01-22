@@ -7,8 +7,11 @@
  */
 package com.woo.jdbcx.test;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,8 +47,55 @@ public class JdbcxTemplateTest {
 	@Test
 	public void testQueryListBean() {
 		Member sample = new Member();
-		sample.setName("lol2");
+		sample.setName("woo");
 		List<Member> members = jdbc.queryForListBean("select * from member where name = :name", sample, Member.class);
+		Assert.assertEquals("name with woo only 1 record", members.size(), 1);
+
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("name", "woo");
+		List<Member> members2 = jdbc.queryForListBean("select * from member where name = :name", params, Member.class);
+		Assert.assertEquals("name with woo only 1 record", members2.size(), 1);
+
+		Member member = members.get(0);
+		Assert.assertEquals("ip should be 127.0.0.1", member.getRegistIp(), "127.0.0.1");
+	}
+
+	@Test
+	public void testQueryListMap() {
+		List<Map<String, Object>> members = jdbc.queryForListMap("select * from member order by id asc");
+		Assert.assertEquals("total records is 2", members.size(), 2);
+		Map<String, Object> member = members.get(0);
+		Assert.assertEquals("ip should be 127.0.0.1", member.get("name"), "woo");
+	}
+
+	@Test
+	public void testQueryPrimitiveObject() {
+		Integer count = jdbc.queryForObject("select count(0) from member", Integer.class);
+		Assert.assertEquals("total records is 2", count.intValue(), 2);
+
+		Long countLong = jdbc.queryForObject("select count(0) from member", Long.class);
+		Assert.assertEquals("total records is 2", countLong.intValue(), 2);
+
+		Member m = new Member();
+		m.setName("woo");
+		Boolean isAdmin = jdbc.queryForObject("select is_admin from member where name = :name", m, Boolean.class);
+		Assert.assertTrue(isAdmin);
 
 	}
+
+	@Test
+	public void testUpdate() {
+		Member m = new Member();
+		m.setName("woo2");
+		m.setId(1);
+		m.setRegistIp("192.168.1.110");
+		int update = jdbc.update("update member set name = :name, regist_ip = :registIp where id = :id", m);
+		Assert.assertEquals(update, 1);
+		
+		Member member = jdbc.queryForBean("select name, regist_ip from member where id = 1", Member.class);
+		Assert.assertEquals(member.getName(), "woo2");
+		Assert.assertEquals(member.getRegistIp(), "192.168.1.110");
+		Assert.assertNull(member.getId());
+	}
+
 }
