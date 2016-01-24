@@ -15,11 +15,9 @@
  * limitations under the License.
  *******************************************************************************/
 
-package com.woo.jdbcx.modal;
+package com.woo.jdbcx;
 
 import org.springframework.stereotype.Component;
-
-import com.woo.jdbcx.JdbcxDaoSupport;
 
 /**
  * @author Woo Cupid
@@ -27,6 +25,6 @@ import com.woo.jdbcx.JdbcxDaoSupport;
  * @version $Revision$
  */
 @Component
-public class MemberRepository extends JdbcxDaoSupport {
+public class JdbcxDaoSupportImpl extends JdbcxDaoSupport {
 
 }
