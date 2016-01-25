@@ -41,12 +41,14 @@ import net.sf.jsqlparser.statement.select.SubSelect;
 import net.sf.jsqlparser.statement.select.ValuesList;
 import net.sf.jsqlparser.statement.select.WithItem;
 
+
 /**
- * sql解析类，提供更智能的count查询sql
- *
- * @author liuzh
+ * @author Woo Cupid
+ * @date 2016年1月25日
+ * @version $Revision$
  */
 public class SqlParser {
+	
 	private static final List<SelectItem> COUNT_ITEM;
 	private static final Alias TABLE_ALIAS;
 
