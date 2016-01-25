@@ -18,6 +18,8 @@
 
 package com.woo.jdbcx.dialect.impl;
 
+import org.springframework.data.domain.Pageable;
+
 /**
  * Take note that at least one column
  * needs to be defined for ORDER BY
@@ -25,12 +27,19 @@ package com.woo.jdbcx.dialect.impl;
  */
 public class SqlServer2012Dialect extends AbstractSQLDialect {
 
-    @Override
     public String getPageSql(String sql) {
         StringBuilder sqlBuilder = new StringBuilder(sql.length() + 14);
         sqlBuilder.append(sql);
         sqlBuilder.append(" OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
         return sqlBuilder.toString();
     }
+
+	/* (non-Javadoc)
+	 * @see com.woo.jdbcx.dialect.SQLDialect#getPageableSql(java.lang.String, org.springframework.data.domain.Pageable)
+	 */
+	@Override
+	public String getPageableSql(String sql, Pageable pageable) {
+		return null;
+	}
 
 }

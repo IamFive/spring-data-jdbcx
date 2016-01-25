@@ -18,65 +18,75 @@
 package com.woo.jdbcx.dialect;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.woo.jdbcx.dialect.impl.MysqlDialect;
 import com.woo.jdbcx.dialect.impl.PostgreDialect;
 
-public enum Dialects {
+public enum Databases {
 	//@off
     mysql(MysqlDialect.class), 
-    //    mariadb, sqlite, oracle, hsqldb, 
+    //    mariadb, 
+	//    sqlite, 
+	//    oracle, 
+	//    hsqldb, 
     postgresql(PostgreDialect.class), 
-    //    sqlserver, db2, informix, h2, sqlserver2012;
+    //    sqlserver, 
+    //db2, 
+    //informix, 
+    //h2, 
+    //sqlserver2012;
     ;
 	//@on
 
-	private Class<? extends SQLDialect> clazz;
+	Class<? extends SQLDialect> dialect;
+	static List<String> names = new ArrayList<String>();
 
-	Dialects(Class<? extends SQLDialect> clazz) {
-		this.clazz = clazz;
+	Databases(Class<? extends SQLDialect> dialect) {
+		this.dialect = dialect;
 	}
 
-	public static Dialects of(String dialect) {
+	public SQLDialect getDialect() {
 		try {
-			Dialects d = Dialects.valueOf(dialect.toLowerCase());
+			return this.dialect.newInstance();
+		} catch (InstantiationException | IllegalAccessException e) {
+			// should not happen
+		}
+		return null;
+	}
+
+	public static Databases of(String name) {
+		try {
+			Databases d = Databases.valueOf(name.toLowerCase());
 			return d;
 		} catch (IllegalArgumentException e) {
-			String dialects = null;
-			for (Dialects d : Dialects.values()) {
-				if (dialects == null) {
-					dialects = d.toString();
-				} else {
-					dialects += "," + d;
-				}
-			}
-
-			String format = MessageFormat.format("dialect[{0}] is not support, available dialects are : [{1}]", dialect,
-					dialects);
+			String format = MessageFormat.format("Database[{0}] is not support, available databases : {1}", name,
+					names());
 			throw new IllegalArgumentException(format);
 		}
 	}
 
-	public static String[] dialects() {
-		Dialects[] dialects = Dialects.values();
-		String[] ds = new String[dialects.length];
-		for (int i = 0; i < dialects.length; i++) {
-			ds[i] = dialects[i].toString();
-		}
-		return ds;
-	}
-
 	public static String fromJdbcUrl(String jdbcUrl) {
-		String[] dialects = dialects();
-		for (String dialect : dialects) {
-			if (jdbcUrl.indexOf(":" + dialect + ":") != -1) {
-				return dialect;
+		for (String database : names()) {
+			if (jdbcUrl.indexOf(":" + database + ":") != -1) {
+				return database;
 			}
 		}
 		return null;
 	}
 
+	public static List<String> names() {
+		if (names.size() == 0) {
+			Databases[] databases = Databases.values();
+			for (Databases db : databases) {
+				names.add(db.name());
+			}
+		}
+		return names;
+	}
+
 	public static void main(String[] args) {
-		Dialects.of("unknown");
+		Databases.of("unknown");
 	}
 }

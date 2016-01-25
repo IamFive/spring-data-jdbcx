@@ -18,8 +18,10 @@
 
 package com.woo.jdbcx.dialect.impl;
 
+import org.springframework.data.domain.Pageable;
+
 public class Db2Dialect extends AbstractSQLDialect {
-    @Override
+	
     public String getPageSql(String sql) {
         StringBuilder sqlBuilder = new StringBuilder(sql.length() + 120);
         sqlBuilder.append("select * from (select tmp_page.*,rownumber() over() as row_id from ( ");
@@ -27,5 +29,14 @@ public class Db2Dialect extends AbstractSQLDialect {
         sqlBuilder.append(" ) as tmp_page) where row_id between  ? and ?");
         return sqlBuilder.toString();
     }
+
+	/* (non-Javadoc)
+	 * @see com.woo.jdbcx.dialect.SQLDialect#getPageableSql(java.lang.String, org.springframework.data.domain.Pageable)
+	 */
+	@Override
+	public String getPageableSql(String sql, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

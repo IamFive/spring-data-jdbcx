@@ -18,13 +18,23 @@
 
 package com.woo.jdbcx.dialect.impl;
 
+import org.springframework.data.domain.Pageable;
+
 public class MysqlDialect extends AbstractSQLDialect {
-    @Override
     public String getPageSql(String sql) {
         StringBuilder sqlBuilder = new StringBuilder(sql.length() + 14);
         sqlBuilder.append(sql);
         sqlBuilder.append(" limit ?,?");
         return sqlBuilder.toString();
     }
+
+	/* (non-Javadoc)
+	 * @see com.woo.jdbcx.dialect.SQLDialect#getPageableSql(java.lang.String, org.springframework.data.domain.Pageable)
+	 */
+	@Override
+	public String getPageableSql(String sql, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

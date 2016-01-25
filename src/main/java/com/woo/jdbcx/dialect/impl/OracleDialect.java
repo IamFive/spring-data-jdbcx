@@ -18,8 +18,9 @@
 
 package com.woo.jdbcx.dialect.impl;
 
+import org.springframework.data.domain.Pageable;
+
 public class OracleDialect extends AbstractSQLDialect {
-    @Override
     public String getPageSql(String sql) {
         StringBuilder sqlBuilder = new StringBuilder(sql.length() + 120);
         sqlBuilder.append("select * from ( select tmp_page.*, rownum row_id from ( ");
@@ -27,5 +28,14 @@ public class OracleDialect extends AbstractSQLDialect {
         sqlBuilder.append(" ) tmp_page where rownum <= ? ) where row_id > ?");
         return sqlBuilder.toString();
     }
+
+	/* (non-Javadoc)
+	 * @see com.woo.jdbcx.dialect.SQLDialect#getPageableSql(java.lang.String, org.springframework.data.domain.Pageable)
+	 */
+	@Override
+	public String getPageableSql(String sql, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

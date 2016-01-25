@@ -18,8 +18,9 @@
 
 package com.woo.jdbcx.dialect.impl;
 
+import org.springframework.data.domain.Pageable;
+
 public class InformixDialect extends AbstractSQLDialect {
-    @Override
     public String getPageSql(String sql) {
         StringBuilder sqlBuilder = new StringBuilder(sql.length() + 40);
         sqlBuilder.append("select skip ? first ? * from ( ");
@@ -27,5 +28,14 @@ public class InformixDialect extends AbstractSQLDialect {
         sqlBuilder.append(" ) temp_t");
         return sqlBuilder.toString();
     }
+
+	/* (non-Javadoc)
+	 * @see com.woo.jdbcx.dialect.SQLDialect#getPageableSql(java.lang.String, org.springframework.data.domain.Pageable)
+	 */
+	@Override
+	public String getPageableSql(String sql, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

@@ -18,20 +18,25 @@
 
 package com.woo.jdbcx.dialect;
 
+import org.springframework.data.domain.Pageable;
+
 public interface SQLDialect {
 
 	/**
 	 * 
-	 * @param sql 		original sql
-	 * @return			COUNT sql of sql
+	 * @param sql 		original SQL
+	 * @return			COUNT SQL for the SQL
 	 */
 	String getCountSql(String sql);
 
+	
 	/**
+	 * wrap SQL with pagination and order-by expression
 	 * 
-	 * @param sql
+	 * @param sql			original SQL
+	 * @param pageable		pagination 
 	 * @return
 	 */
-	String getPageSql(String sql);
+	String getPageableSql(String sql, Pageable pageable);
 
 }

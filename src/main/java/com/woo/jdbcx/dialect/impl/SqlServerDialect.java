@@ -18,17 +18,19 @@
 
 package com.woo.jdbcx.dialect.impl;
 
-import com.woo.jdbcx.dialect.SqlServer;
+import org.springframework.data.domain.Pageable;
 
 public class SqlServerDialect extends AbstractSQLDialect {
-    private static final SqlServer pageSql = new SqlServer();
 
+	/* (non-Javadoc)
+	 * @see com.woo.jdbcx.dialect.SQLDialect#getPageSql(java.lang.String, org.springframework.data.domain.Pageable)
+	 */
+	@Override
+	public String getPageableSql(String sql, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 
-    @Override
-    public String getPageSql(String sql) {
-//        Page<?> page = SqlUtil.getLocalPage();
-//        return pageSql.convertToPageSql(sql, page.getStartRow(), page.getPageSize());
-    	return null;
-    }
 
 }
