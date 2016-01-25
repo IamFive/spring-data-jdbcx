@@ -15,7 +15,6 @@
  * limitations under the License.
  *******************************************************************************/
 
-
 package com.woo.jdbcx.dialect;
 
 import java.util.List;

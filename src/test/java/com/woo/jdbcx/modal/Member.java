@@ -20,118 +20,118 @@ package com.woo.jdbcx.modal;
 import java.util.Date;
 
 public class Member {
-	
-    private Integer id;
 
-    private String name;
+	private Integer id;
 
-    private String registIp;
+	private String name;
 
-    private Date createdOn;
+	private String registIp;
 
-    private Date updatedOn;
+	private Date createdOn;
 
-    private Boolean isAdmin;
+	private Date updatedOn;
+
+	private Boolean isAdmin;
 
 	private Object profile;
 
-    /**
-     * @return id
-     */
-    public Integer getId() {
-        return id;
-    }
+	/**
+	 * @return id
+	 */
+	public Integer getId() {
+		return id;
+	}
 
-    /**
-     * @param id
-     */
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	/**
+	 * @param id
+	 */
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    /**
-     * @return name
-     */
-    public String getName() {
-        return name;
-    }
+	/**
+	 * @return name
+	 */
+	public String getName() {
+		return name;
+	}
 
-    /**
-     * @param name
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
+	/**
+	 * @param name
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    /**
-     * @return regist_ip
-     */
-    public String getRegistIp() {
-        return registIp;
-    }
+	/**
+	 * @return regist_ip
+	 */
+	public String getRegistIp() {
+		return registIp;
+	}
 
-    /**
-     * @param registIp
-     */
-    public void setRegistIp(String registIp) {
-        this.registIp = registIp;
-    }
+	/**
+	 * @param registIp
+	 */
+	public void setRegistIp(String registIp) {
+		this.registIp = registIp;
+	}
 
-    /**
-     * @return created_on
-     */
-    public Date getCreatedOn() {
-        return createdOn;
-    }
+	/**
+	 * @return created_on
+	 */
+	public Date getCreatedOn() {
+		return createdOn;
+	}
 
-    /**
-     * @param createdOn
-     */
-    public void setCreatedOn(Date createdOn) {
-        this.createdOn = createdOn;
-    }
+	/**
+	 * @param createdOn
+	 */
+	public void setCreatedOn(Date createdOn) {
+		this.createdOn = createdOn;
+	}
 
-    /**
-     * @return updated_on
-     */
-    public Date getUpdatedOn() {
-        return updatedOn;
-    }
+	/**
+	 * @return updated_on
+	 */
+	public Date getUpdatedOn() {
+		return updatedOn;
+	}
 
-    /**
-     * @param updatedOn
-     */
-    public void setUpdatedOn(Date updatedOn) {
-        this.updatedOn = updatedOn;
-    }
+	/**
+	 * @param updatedOn
+	 */
+	public void setUpdatedOn(Date updatedOn) {
+		this.updatedOn = updatedOn;
+	}
 
-    /**
-     * @return is_admin
-     */
-    public Boolean getIsAdmin() {
-        return isAdmin;
-    }
+	/**
+	 * @return is_admin
+	 */
+	public Boolean getIsAdmin() {
+		return isAdmin;
+	}
 
-    /**
-     * @param isAdmin
-     */
-    public void setIsAdmin(Boolean isAdmin) {
-        this.isAdmin = isAdmin;
-    }
+	/**
+	 * @param isAdmin
+	 */
+	public void setIsAdmin(Boolean isAdmin) {
+		this.isAdmin = isAdmin;
+	}
 
-    /**
-     * @return profile
-     */
+	/**
+	 * @return profile
+	 */
 	public Object getProfile() {
-        return profile;
-    }
+		return profile;
+	}
 
-    /**
-     * @param profile
-     */
+	/**
+	 * @param profile
+	 */
 	public void setProfile(Object profile) {
-        this.profile = profile;
-    }
+		this.profile = profile;
+	}
 
 	/*
 	 * (non-Javadoc)

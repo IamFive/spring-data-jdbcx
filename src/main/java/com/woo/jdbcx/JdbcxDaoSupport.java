@@ -63,8 +63,7 @@ public abstract class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 	}
 
 	public <T> List<T> queryForListBean(String sql, Map<String, ?> paramMap, Class<T> mapResultToClass,
-			Pageable pageable)
-			throws DataAccessException {
+			Pageable pageable) throws DataAccessException {
 		// TODO
 		// 1. get count sql
 		// 2. get pageable sql

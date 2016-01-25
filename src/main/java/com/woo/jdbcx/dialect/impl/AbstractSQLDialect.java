@@ -14,9 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-
-
-
 package com.woo.jdbcx.dialect.impl;
 
 import com.woo.jdbcx.dialect.SQLDialect;
@@ -26,13 +23,11 @@ import com.woo.jdbcx.dialect.SqlParser;
  * @author liuzh
  */
 public abstract class AbstractSQLDialect implements SQLDialect {
-    //处理SQL
-    public static final SqlParser sqlParser = new SqlParser();
+	// 处理SQL
+	public static final SqlParser sqlParser = new SqlParser();
 
-
-    public String getCountSql(final String sql) {
-        return sqlParser.getSmartCountSql(sql);
-    }
-
+	public String getCountSql(final String sql) {
+		return sqlParser.getSmartCountSql(sql);
+	}
 
 }

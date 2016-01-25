@@ -15,20 +15,21 @@
  * limitations under the License.
  *******************************************************************************/
 
-
 package com.woo.jdbcx.dialect.impl;
 
 import org.springframework.data.domain.Pageable;
 
 public class MysqlDialect extends AbstractSQLDialect {
-    public String getPageSql(String sql) {
-        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 14);
-        sqlBuilder.append(sql);
-        sqlBuilder.append(" limit ?,?");
-        return sqlBuilder.toString();
-    }
+	public String getPageSql(String sql) {
+		StringBuilder sqlBuilder = new StringBuilder(sql.length() + 14);
+		sqlBuilder.append(sql);
+		sqlBuilder.append(" limit ?,?");
+		return sqlBuilder.toString();
+	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.woo.jdbcx.dialect.SQLDialect#getPageableSql(java.lang.String, org.springframework.data.domain.Pageable)
 	 */
 	@Override

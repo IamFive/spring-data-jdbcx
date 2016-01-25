@@ -15,21 +15,22 @@
  * limitations under the License.
  *******************************************************************************/
 
-
 package com.woo.jdbcx.dialect.impl;
 
 import org.springframework.data.domain.Pageable;
 
 public class OracleDialect extends AbstractSQLDialect {
-    public String getPageSql(String sql) {
-        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 120);
-        sqlBuilder.append("select * from ( select tmp_page.*, rownum row_id from ( ");
-        sqlBuilder.append(sql);
-        sqlBuilder.append(" ) tmp_page where rownum <= ? ) where row_id > ?");
-        return sqlBuilder.toString();
-    }
+	public String getPageSql(String sql) {
+		StringBuilder sqlBuilder = new StringBuilder(sql.length() + 120);
+		sqlBuilder.append("select * from ( select tmp_page.*, rownum row_id from ( ");
+		sqlBuilder.append(sql);
+		sqlBuilder.append(" ) tmp_page where rownum <= ? ) where row_id > ?");
+		return sqlBuilder.toString();
+	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.woo.jdbcx.dialect.SQLDialect#getPageableSql(java.lang.String, org.springframework.data.domain.Pageable)
 	 */
 	@Override

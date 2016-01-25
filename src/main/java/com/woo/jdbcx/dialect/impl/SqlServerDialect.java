@@ -15,14 +15,15 @@
  * limitations under the License.
  *******************************************************************************/
 
-
 package com.woo.jdbcx.dialect.impl;
 
 import org.springframework.data.domain.Pageable;
 
 public class SqlServerDialect extends AbstractSQLDialect {
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.woo.jdbcx.dialect.SQLDialect#getPageSql(java.lang.String, org.springframework.data.domain.Pageable)
 	 */
 	@Override
@@ -30,7 +31,5 @@ public class SqlServerDialect extends AbstractSQLDialect {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-
 
 }

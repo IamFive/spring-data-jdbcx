@@ -15,21 +15,22 @@
  * limitations under the License.
  *******************************************************************************/
 
-
 package com.woo.jdbcx.dialect.impl;
 
 import org.springframework.data.domain.Pageable;
 
 public class InformixDialect extends AbstractSQLDialect {
-    public String getPageSql(String sql) {
-        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 40);
-        sqlBuilder.append("select skip ? first ? * from ( ");
-        sqlBuilder.append(sql);
-        sqlBuilder.append(" ) temp_t");
-        return sqlBuilder.toString();
-    }
+	public String getPageSql(String sql) {
+		StringBuilder sqlBuilder = new StringBuilder(sql.length() + 40);
+		sqlBuilder.append("select skip ? first ? * from ( ");
+		sqlBuilder.append(sql);
+		sqlBuilder.append(" ) temp_t");
+		return sqlBuilder.toString();
+	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.woo.jdbcx.dialect.SQLDialect#getPageableSql(java.lang.String, org.springframework.data.domain.Pageable)
 	 */
 	@Override

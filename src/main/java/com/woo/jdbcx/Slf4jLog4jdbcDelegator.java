@@ -15,7 +15,6 @@
  * limitations under the License.
  *******************************************************************************/
 
-
 package com.woo.jdbcx;
 
 import java.sql.SQLFeatureNotSupportedException;
@@ -59,7 +58,7 @@ public class Slf4jLog4jdbcDelegator extends Slf4jSpyLogDelegator {
 			super.exceptionOccured(spy, methodCall, e, sql, execTime);
 		}
 	}
-	
+
 	private boolean shouldSqlBeLogged(String sql) {
 		if (sql == null) {
 			return false;
@@ -70,11 +69,13 @@ public class Slf4jLog4jdbcDelegator extends Slf4jSpyLogDelegator {
 			return false;
 		}
 		sql = sql.substring(0, 6).toLowerCase();
-		return (Properties.isDumpSqlSelect() && "select".equals(sql)) || (Properties.isDumpSqlInsert() && "insert".equals(sql))
-				|| (Properties.isDumpSqlUpdate() && "update".equals(sql)) || (Properties.isDumpSqlDelete() && "delete".equals(sql))
+		return (Properties.isDumpSqlSelect() && "select".equals(sql))
+				|| (Properties.isDumpSqlInsert() && "insert".equals(sql))
+				|| (Properties.isDumpSqlUpdate() && "update".equals(sql))
+				|| (Properties.isDumpSqlDelete() && "delete".equals(sql))
 				|| (Properties.isDumpSqlCreate() && "create".equals(sql));
 	}
-	
+
 	private static String getDebugInfo() {
 		Throwable t = new Throwable();
 		t.fillInStackTrace();
@@ -115,27 +116,29 @@ public class Slf4jLog4jdbcDelegator extends Slf4jSpyLogDelegator {
 					className = stackTrace[i].getClassName();
 					if (className.startsWith("net.sf.log4jdbc")) {
 						firstLog4jdbcCall = i;
-					} else if (Properties.isTraceFromApplication() && Pattern.matches(Properties.getDebugStackPrefix(), className)) {
+					} else if (Properties.isTraceFromApplication()
+							&& Pattern.matches(Properties.getDebugStackPrefix(), className)) {
 						lastApplicationCall = i;
 						break;
 					}
 				}
 				int j = lastApplicationCall;
 
-				if (j == 0)  // if app not found, then use whoever was the last guy that called a log4jdbc class.
+				if (j == 0) // if app not found, then use whoever was the last guy that called a log4jdbc class.
 				{
 					j = 1 + firstLog4jdbcCall;
 				}
 
 				dump.append(stackTrace[j].getClassName()).append(".").append(stackTrace[j].getMethodName()).append("(")
-						.append(stackTrace[j].getFileName()).append(":").append(stackTrace[j].getLineNumber()).append(")");
+						.append(stackTrace[j].getFileName()).append(":").append(stackTrace[j].getLineNumber())
+						.append(")");
 			}
 
 			return dump.toString();
 		}
 		return null;
 	}
-	
+
 	public void sqlOccurred(Spy spy, String methodCall, String sql) {
 		if (!Properties.isDumpSqlFilteringOn() || shouldSqlBeLogged(sql)) {
 			if (sqlOnlyLogger.isDebugEnabled()) {
@@ -145,7 +148,7 @@ public class Slf4jLog4jdbcDelegator extends Slf4jSpyLogDelegator {
 			}
 		}
 	}
-	
+
 	protected String processSql(String sql) {
 		return new BasicFormatterImpl().format(sql);
 	}

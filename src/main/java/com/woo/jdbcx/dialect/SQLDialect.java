@@ -15,7 +15,6 @@
  * limitations under the License.
  *******************************************************************************/
 
-
 package com.woo.jdbcx.dialect;
 
 import org.springframework.data.domain.Pageable;
@@ -29,7 +28,6 @@ public interface SQLDialect {
 	 */
 	String getCountSql(String sql);
 
-	
 	/**
 	 * wrap SQL with pagination and order-by expression
 	 * 

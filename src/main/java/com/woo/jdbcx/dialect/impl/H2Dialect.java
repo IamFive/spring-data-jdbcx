@@ -15,22 +15,22 @@
  * limitations under the License.
  *******************************************************************************/
 
-
-
 package com.woo.jdbcx.dialect.impl;
 
 import org.springframework.data.domain.Pageable;
 
 public class H2Dialect extends AbstractSQLDialect {
-	
-    public String getPageSql(String sql) {
-        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 20);
-        sqlBuilder.append(sql);
-        sqlBuilder.append(" limit ? offset ?");
-        return sqlBuilder.toString();
-    }
 
-	/* (non-Javadoc)
+	public String getPageSql(String sql) {
+		StringBuilder sqlBuilder = new StringBuilder(sql.length() + 20);
+		sqlBuilder.append(sql);
+		sqlBuilder.append(" limit ? offset ?");
+		return sqlBuilder.toString();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.woo.jdbcx.dialect.SQLDialect#getPageableSql(java.lang.String, org.springframework.data.domain.Pageable)
 	 */
 	@Override
