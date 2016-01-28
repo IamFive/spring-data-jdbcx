@@ -1,19 +1,10 @@
-<!--
-   
-    Copyright 2014-2016 the original author or authors.
-   
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-   
-         http://www.apache.org/licenses/LICENSE-2.0
-   
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
- -->
+<!-- Copyright 2014-2016 the original author or authors. Licensed under the 
+	Apache License, Version 2.0 (the "License"); you may not use this file except 
+	in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -26,29 +17,40 @@
 		<commons-lang3.version>3.2.1</commons-lang3.version>
 		<assertj.version>2.2.0</assertj.version>
 		<java.version>1.8</java.version>
+		<jsqlparser.version>0.9.4</jsqlparser.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 	</properties>
 
+	<repositories>
+		<repository>
+			<id>jsqlparser-snapshots</id>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<url>https://oss.sonatype.org/content/groups/public/</url>
+		</repository>
+	</repositories>
+
 	<dependencies>
-		
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-commons</artifactId>
 		</dependency>
-		
+
 		<dependency>
-            <groupId>com.github.jsqlparser</groupId>
-            <artifactId>jsqlparser</artifactId>
-            <version>0.9.4</version>
-        </dependency>
-		
+			<groupId>com.github.jsqlparser</groupId>
+			<artifactId>jsqlparser</artifactId>
+			<version>${jsqlparser.version}</version>
+		</dependency>
+
 		<!-- log -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -84,7 +86,7 @@
 			<version>${assertj.version}</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-core</artifactId>
@@ -95,21 +97,15 @@
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		
-		<!-- database 
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>9.4-1205-jdbc41</version>
-			<scope>test</scope>
-		</dependency>
-		-->
+
+		<!-- database <dependency> <groupId>org.postgresql</groupId> <artifactId>postgresql</artifactId> 
+			<version>9.4-1205-jdbc41</version> <scope>test</scope> </dependency> -->
 		<dependency>
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
+
 	</dependencies>
 
 	<build>

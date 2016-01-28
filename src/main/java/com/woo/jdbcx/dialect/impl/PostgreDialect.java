@@ -41,6 +41,7 @@ public class PostgreDialect extends AbstractSQLDialect {
 		for (Order order : sort) {
 			order.toString();
 		}
+		
 		return null;
 	}
 	

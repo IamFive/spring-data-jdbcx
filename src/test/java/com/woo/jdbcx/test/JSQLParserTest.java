@@ -7,10 +7,20 @@
  */
 package com.woo.jdbcx.test;
 
+import java.util.List;
+
+import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.woo.jdbcx.dialect.OrderByParser;
 
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.select.OrderByElement;
+import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.select.SelectBody;
 
@@ -21,11 +31,28 @@ import net.sf.jsqlparser.statement.select.SelectBody;
  */
 public class JSQLParserTest {
 	
+	
+	private static final Logger logger = LoggerFactory.getLogger(JSQLParserTest.class);
+
+	
 	@Test
 	public void findOrderByTest() throws JSQLParserException {
 		String sql = "select * from member order by id asc, name desc";
-		Select parsed = (Select) CCJSqlParserUtil.parse(sql);
-		SelectBody selectBody = parsed.getSelectBody();
+		Select smt1 = (Select) CCJSqlParserUtil.parse(sql);
+		SelectBody select = smt1.getSelectBody();
+		
+		List<OrderByElement> extraOrderBy = OrderByParser.extraOrderBy(select);
+		String orderByToString = PlainSelect.orderByToString(extraOrderBy);
+		logger.info("{}", orderByToString);
+		
+		
+		String sql2 = "with temp as (select * from member where id > 3) select * from member where id = temp.id";
+		Statement smt2 = CCJSqlParserUtil.parse(sql2);
+		
+		String sql3 = "with temp as (select * from member where id > 3)";
+		Statement statement3 = CCJSqlParserUtil.parse(sql3);
+		Assert.assertTrue("with is a select", !(statement3 instanceof Select) );
+		
 	}
 
 }
