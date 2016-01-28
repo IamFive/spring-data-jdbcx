@@ -11,6 +11,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -23,108 +25,117 @@ import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource;
  */
 public class JdbcxPagingDaoSupport extends JdbcxDaoSupport {
 
-	public <T> List<T> queryForListBean(String sql, Map<String, ?> paramMap, Class<T> mapResultToClass,
+	public <T> Page<T> queryForListBean(String sql, Map<String, ?> paramMap, Class<T> mapResultToClass,
 			Pageable pageable) {
 		String countSql = dialect.getCountSql(sql);
 		Integer count = queryForObject(countSql, paramMap, Integer.class);
 		if (count > pageable.getOffset()) {
-			String pageableSql = dialect.getPageableSql(countSql, pageable);
-			return jdbcTemplate.query(pageableSql, paramMap, new BeanPropertyRowMapper<T>(mapResultToClass));
+			String pageableSql = dialect.getPageableSql(sql, pageable);
+			List<T> list = jdbcTemplate.query(pageableSql, paramMap, new BeanPropertyRowMapper<T>(mapResultToClass));
+			return new PageImpl<T>(list, pageable, count);
 		} else {
-			return Collections.<T> emptyList();
+			return new PageImpl<T>(Collections.<T> emptyList(), pageable, count);
 		}
 	}
 
-	public <T> List<T> queryForListBean(String sql, Object beanParamSource, Class<T> mapResultToClass,
+	public <T> Page<T> queryForListBean(String sql, Object beanParamSource, Class<T> mapResultToClass,
 			Pageable pageable) {
 		BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(beanParamSource);
 		String countSql = dialect.getCountSql(sql);
 		Integer count = queryForObject(countSql, paramSource, Integer.class);
 		if (count > pageable.getOffset()) {
-			String pageableSql = dialect.getPageableSql(countSql, pageable);
-			return jdbcTemplate.query(pageableSql, paramSource, new BeanPropertyRowMapper<T>(mapResultToClass));
+			String pageableSql = dialect.getPageableSql(sql, pageable);
+			List<T> list = jdbcTemplate.query(pageableSql, paramSource, new BeanPropertyRowMapper<T>(mapResultToClass));
+			return new PageImpl<T>(list, pageable, count);
 		} else {
-			return Collections.<T> emptyList();
+			return new PageImpl<T>(Collections.<T> emptyList(), pageable, count);
 		}
 	}
 
-	public <T> List<T> queryForListBean(String sql, Class<T> mapResultToClass, Pageable pageable) {
+	public <T> Page<T> queryForListBean(String sql, Class<T> mapResultToClass, Pageable pageable) {
 		String countSql = dialect.getCountSql(sql);
 		Integer count = queryForObject(countSql, Integer.class);
 		if (count > pageable.getOffset()) {
-			String pageableSql = dialect.getPageableSql(countSql, pageable);
-			return jdbcTemplate.query(pageableSql, new BeanPropertyRowMapper<T>(mapResultToClass));
+			String pageableSql = dialect.getPageableSql(sql, pageable);
+			List<T> list = jdbcTemplate.query(pageableSql, new BeanPropertyRowMapper<T>(mapResultToClass));
+			return new PageImpl<T>(list, pageable, count);
 		} else {
-			return Collections.<T> emptyList();
+			return new PageImpl<T>(Collections.<T> emptyList(), pageable, count);
 		}
 	}
 
-	public List<Map<String, Object>> queryForListMap(String sql, Map<String, ?> paramMap, Pageable pageable) {
+	public Page<Map<String, Object>> queryForListMap(String sql, Map<String, ?> paramMap, Pageable pageable) {
 		String countSql = dialect.getCountSql(sql);
 		Integer count = queryForObject(countSql, paramMap, Integer.class);
 		if (count > pageable.getOffset()) {
-			String pageableSql = dialect.getPageableSql(countSql, pageable);
-			return jdbcTemplate.queryForList(pageableSql, paramMap);
+			String pageableSql = dialect.getPageableSql(sql, pageable);
+			List<Map<String, Object>> list = jdbcTemplate.queryForList(pageableSql, paramMap);
+			return new PageImpl<Map<String, Object>>(list, pageable, count);
 		} else {
-			return Collections.<Map<String, Object>> emptyList();
+			return new PageImpl<Map<String, Object>>(Collections.<Map<String, Object>> emptyList(), pageable, count);
 		}
 	}
 
-	public List<Map<String, Object>> queryForListMap(String sql, Object beanParamSource, Pageable pageable) {
+	public Page<Map<String, Object>> queryForListMap(String sql, Object beanParamSource, Pageable pageable) {
 		BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(beanParamSource);
 		String countSql = dialect.getCountSql(sql);
 		Integer count = queryForObject(countSql, paramSource, Integer.class);
 		if (count > pageable.getOffset()) {
-			String pageableSql = dialect.getPageableSql(countSql, pageable);
-			return jdbcTemplate.queryForList(pageableSql, new BeanPropertySqlParameterSource(beanParamSource));
+			String pageableSql = dialect.getPageableSql(sql, pageable);
+			List<Map<String, Object>> list = jdbcTemplate.queryForList(pageableSql, new BeanPropertySqlParameterSource(beanParamSource));
+			return new PageImpl<Map<String, Object>>(list, pageable, count);
 		} else {
-			return Collections.<Map<String, Object>> emptyList();
+			return new PageImpl<Map<String, Object>>(Collections.<Map<String, Object>> emptyList(), pageable, count);
 		}
 	}
 
-	public List<Map<String, Object>> queryForListMap(String sql, Pageable pageable) {
+	public Page<Map<String, Object>> queryForListMap(String sql, Pageable pageable) {
 		String countSql = dialect.getCountSql(sql);
 		Integer count = queryForObject(countSql, Integer.class);
 		if (count > pageable.getOffset()) {
-			String pageableSql = dialect.getPageableSql(countSql, pageable);
-			return jdbcTemplate.queryForList(pageableSql, EmptySqlParameterSource.INSTANCE);
+			String pageableSql = dialect.getPageableSql(sql, pageable);
+			List<Map<String, Object>> list = jdbcTemplate.queryForList(pageableSql, EmptySqlParameterSource.INSTANCE);
+			return new PageImpl<Map<String, Object>>(list, pageable, count);
 		} else {
-			return Collections.<Map<String, Object>> emptyList();
+			return new PageImpl<Map<String, Object>>(Collections.<Map<String, Object>> emptyList(), pageable, count);
 		}
 	}
 
-	public <T> List<T> queryForList(String sql, Object beanParamSource, Class<T> elementType, Pageable pageable) {
+	public <T> Page<T> queryForList(String sql, Object beanParamSource, Class<T> elementType, Pageable pageable) {
 		BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(beanParamSource);
 		String countSql = dialect.getCountSql(sql);
 		Integer count = queryForObject(countSql, paramSource, Integer.class);
 		if (count > pageable.getOffset()) {
-			String pageableSql = dialect.getPageableSql(countSql, pageable);
-			return jdbcTemplate.queryForList(pageableSql, new BeanPropertySqlParameterSource(beanParamSource),
+			String pageableSql = dialect.getPageableSql(sql, pageable);
+			List<T> list = jdbcTemplate.queryForList(pageableSql, new BeanPropertySqlParameterSource(beanParamSource),
 					elementType);
+			return new PageImpl<T>(list, pageable, count);
 		} else {
-			return Collections.<T> emptyList();
+			return new PageImpl<T>(Collections.<T> emptyList(), pageable, count);
 		}
 	}
 
-	public <T> List<T> queryForList(String sql, Map<String, ?> paramMap, Class<T> elementType, Pageable pageable) {
+	public <T> Page<T> queryForList(String sql, Map<String, ?> paramMap, Class<T> elementType, Pageable pageable) {
 		String countSql = dialect.getCountSql(sql);
 		Integer count = queryForObject(countSql, paramMap, Integer.class);
 		if (count > pageable.getOffset()) {
-			String pageableSql = dialect.getPageableSql(countSql, pageable);
-			return jdbcTemplate.queryForList(pageableSql, paramMap, elementType);
+			String pageableSql = dialect.getPageableSql(sql, pageable);
+			List<T> list = jdbcTemplate.queryForList(pageableSql, paramMap, elementType);
+			return new PageImpl<T>(list, pageable, count);
 		} else {
-			return Collections.<T> emptyList();
+			return new PageImpl<T>(Collections.<T> emptyList(), pageable, count);
 		}
 	}
 
-	public <T> List<T> queryForList(String sql, Class<T> elementType, Pageable pageable) {
+	public <T> Page<T> queryForList(String sql, Class<T> elementType, Pageable pageable) {
 		String countSql = dialect.getCountSql(sql);
 		Integer count = queryForObject(countSql, EmptySqlParameterSource.INSTANCE, Integer.class);
 		if (count > pageable.getOffset()) {
-			String pageableSql = dialect.getPageableSql(countSql, pageable);
-			return jdbcTemplate.queryForList(pageableSql, EmptySqlParameterSource.INSTANCE, elementType);
+			String pageableSql = dialect.getPageableSql(sql, pageable);
+			List<T> list = jdbcTemplate.queryForList(pageableSql, EmptySqlParameterSource.INSTANCE, elementType);
+			return new PageImpl<T>(list, pageable, count);
 		} else {
-			return Collections.<T> emptyList();
+			return new PageImpl<T>(Collections.<T> emptyList(), pageable, count);
 		}
 	}
 

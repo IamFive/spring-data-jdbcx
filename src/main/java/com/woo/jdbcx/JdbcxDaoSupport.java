@@ -196,11 +196,11 @@ public abstract class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 		}
 		return jdbcTemplate.batchUpdate(sql, batchArgs);
 	}
-
-	public final int[] batchUpdate(String sql, Object... batchArgs) {
-		SqlParameterSource[] params = new SqlParameterSource[batchArgs.length];
-		for (int i = 0; i < batchArgs.length; i++) {
-			params[i] = new BeanPropertySqlParameterSource(batchArgs[i]);
+	
+	public final int[] batchUpdate(String sql, List<?> batchArgs) {
+		SqlParameterSource[] params = new SqlParameterSource[batchArgs.size()];
+		for (int i = 0; i < batchArgs.size(); i++) {
+			params[i] = new BeanPropertySqlParameterSource(batchArgs.get(i));
 		}
 		return jdbcTemplate.batchUpdate(sql, params);
 	}

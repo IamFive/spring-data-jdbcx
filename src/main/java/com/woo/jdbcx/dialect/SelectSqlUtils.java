@@ -184,11 +184,13 @@ public class SelectSqlUtils {
 				if (sb instanceof PlainSelect) {
 					// FIXME should we remove elements with same property name?
 					List<OrderByElement> elements = ((PlainSelect) sb).getOrderByElements();
+					elements = elements == null ? new ArrayList<OrderByElement>() : elements;
 					elements.addAll(buildOrderByElements(iterator));
 					((PlainSelect) sb).setOrderByElements(elements);
 				} else if (sb instanceof SetOperationList) {
 					// FIXME should we remove elements with same property name?
 					List<OrderByElement> elements = ((SetOperationList) sb).getOrderByElements();
+					elements = elements == null ? new ArrayList<OrderByElement>() : elements;
 					elements.addAll(buildOrderByElements(iterator));
 					((SetOperationList) sb).setOrderByElements(elements);
 				} else if (sb instanceof WithItem) {
