@@ -16,18 +16,27 @@
  *******************************************************************************/
 package com.woo.jdbcx.dialect.impl;
 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.woo.jdbcx.dialect.SQLDialect;
-import com.woo.jdbcx.dialect.SqlParser;
+import com.woo.jdbcx.dialect.SelectSqlUtils;
 
 /**
- * @author liuzh
+ * 
+ * @author Woo Cupid
+ * @date 2016年1月28日
+ * @version $Revision$
  */
 public abstract class AbstractSQLDialect implements SQLDialect {
-	// 处理SQL
-	public static final SqlParser sqlParser = new SqlParser();
+
+	static final Logger logger = LoggerFactory.getLogger(AbstractSQLDialect.class);
 
 	public String getCountSql(final String sql) {
-		return sqlParser.getSmartCountSql(sql);
+		return SelectSqlUtils.getCountSql(sql);
 	}
+
+
 
 }

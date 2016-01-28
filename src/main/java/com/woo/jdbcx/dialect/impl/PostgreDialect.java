@@ -18,8 +18,6 @@
 package com.woo.jdbcx.dialect.impl;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Order;
 
 public class PostgreDialect extends AbstractSQLDialect {
 	
@@ -37,10 +35,6 @@ public class PostgreDialect extends AbstractSQLDialect {
 	 */
 	@Override
 	public String getPageableSql(String sql, Pageable pageable) {
-		Sort sort = pageable.getSort();
-		for (Order order : sort) {
-			order.toString();
-		}
 		
 		return null;
 	}

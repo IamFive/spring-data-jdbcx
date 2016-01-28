@@ -20,6 +20,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.woo.jdbcx.dialect.impl.H2Dialect;
 import com.woo.jdbcx.dialect.impl.MysqlDialect;
 import com.woo.jdbcx.dialect.impl.PostgreDialect;
 
@@ -34,7 +35,7 @@ public enum Databases {
     //    sqlserver, 
     //db2, 
     //informix, 
-    //h2, 
+    h2(H2Dialect.class), 
     //sqlserver2012;
     ;
 	//@on
@@ -66,10 +67,10 @@ public enum Databases {
 		}
 	}
 
-	public static String fromJdbcUrl(String jdbcUrl) {
+	public static Databases fromJdbcUrl(String jdbcUrl) {
 		for (String database : names()) {
 			if (jdbcUrl.indexOf(":" + database + ":") != -1) {
-				return database;
+				return Databases.of(database);
 			}
 		}
 		return null;

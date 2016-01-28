@@ -17,8 +17,6 @@
 
 package com.woo.jdbcx.modal;
 
-import org.springframework.stereotype.Component;
-
 import com.woo.jdbcx.JdbcxDaoSupport;
 
 /**
@@ -26,7 +24,7 @@ import com.woo.jdbcx.JdbcxDaoSupport;
  * @date 2016年1月21日
  * @version $Revision$
  */
-@Component
+//@Component
 public class MemberRepository extends JdbcxDaoSupport {
 
 }
