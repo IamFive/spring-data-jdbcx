@@ -112,6 +112,8 @@ public class SelectSqlUtils {
 	 * 
 	 * get pageable SQL which support limit x offset x
 	 * 
+	 * <li>Pageable's page starts from *zero*</li>
+	 * 
 	 * @param select
 	 * @param pageable
 	 */

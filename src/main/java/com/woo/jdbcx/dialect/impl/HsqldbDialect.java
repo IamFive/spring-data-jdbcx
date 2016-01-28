@@ -21,12 +21,6 @@ import org.springframework.data.domain.Pageable;
 
 public class HsqldbDialect extends AbstractSQLDialect {
 
-	public String getPageSql(String sql) {
-		StringBuilder sqlBuilder = new StringBuilder(sql.length() + 20);
-		sqlBuilder.append(sql);
-		sqlBuilder.append(" limit ? offset ?");
-		return sqlBuilder.toString();
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -35,8 +29,7 @@ public class HsqldbDialect extends AbstractSQLDialect {
 	 */
 	@Override
 	public String getPageableSql(String sql, Pageable pageable) {
-		// TODO Auto-generated method stub
-		return null;
+		return getPageableSqlWithLimitOffset(sql, pageable);
 	}
 
 }

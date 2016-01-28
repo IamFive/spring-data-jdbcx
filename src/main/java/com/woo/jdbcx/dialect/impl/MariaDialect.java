@@ -17,56 +17,20 @@
 
 package com.woo.jdbcx.dialect.impl;
 
-import java.text.MessageFormat;
-
 import org.springframework.data.domain.Pageable;
 
 import com.woo.jdbcx.dialect.SelectSqlUtils;
 
-/**
- * 
-
-Oracle before 12c, the pagination SQL sample:
-<pre>
-SELECT * FROM (
-    SELECT rownum rnum, a.* 
-    FROM(
-        SELECT fieldA,fieldB 
-        FROM table 
-        ORDER BY fieldA 
-    ) a 
-    WHERE rownum <=5+14
-)
-WHERE rnum >=5
-</pre>
-
-
-Oracle 12c, sql Sample:
-<pre>
-SELECT fieldA,fieldB 
-FROM table 
-ORDER BY fieldA 
-OFFSET 5 ROWS FETCH NEXT 14 ROWS ONLY;
-</pre>
-
- * @author Woo Cupid
- * @date 2016年1月28日
- * @version $Revision$
- */
-public class OracleDialect extends AbstractSQLDialect {
+public class MariaDialect extends AbstractSQLDialect {
 
 	/*
+	 * (non-Javadoc)
 	 * 
 	 * @see com.woo.jdbcx.dialect.SQLDialect#getPageableSql(java.lang.String, org.springframework.data.domain.Pageable)
 	 */
 	@Override
 	public String getPageableSql(String sql, Pageable pageable) {
-		String sortedSql = SelectSqlUtils.addSort(sql, pageable.getSort());
-		int startRow = pageable.getOffset();
-		int endRow = pageable.getOffset() + pageable.getPageSize();
-		String pagedSql = "select * from ( select tmp_page.*, rownum row_id from ({0}) tmp_page "
-				+ " where rownum <= {1} ) where row_id > {2}";
-		return MessageFormat.format(pagedSql, sortedSql, endRow, startRow);
+		return getPageableSqlWithLimitOffset(sql, pageable);
 	}
 
 }

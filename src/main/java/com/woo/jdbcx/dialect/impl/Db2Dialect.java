@@ -17,17 +17,13 @@
 
 package com.woo.jdbcx.dialect.impl;
 
+import java.text.MessageFormat;
+
 import org.springframework.data.domain.Pageable;
 
-public class Db2Dialect extends AbstractSQLDialect {
+import com.woo.jdbcx.dialect.SelectSqlUtils;
 
-	public String getPageSql(String sql) {
-		StringBuilder sqlBuilder = new StringBuilder(sql.length() + 120);
-		sqlBuilder.append("select * from (select tmp_page.*,rownumber() over() as row_id from ( ");
-		sqlBuilder.append(sql);
-		sqlBuilder.append(" ) as tmp_page) where row_id between  ? and ?");
-		return sqlBuilder.toString();
-	}
+public class Db2Dialect extends AbstractSQLDialect {
 
 	/*
 	 * (non-Javadoc)
@@ -36,8 +32,12 @@ public class Db2Dialect extends AbstractSQLDialect {
 	 */
 	@Override
 	public String getPageableSql(String sql, Pageable pageable) {
-		// TODO Auto-generated method stub
-		return null;
+		String sortedSql = SelectSqlUtils.addSort(sql, pageable.getSort());
+		int startRow = pageable.getOffset();
+		int endRow = pageable.getOffset() + pageable.getPageSize();
+		String pagedSql = "select * from ( select tmp_page.*,rownumber() over() as row_id from ({0}) as tmp_page"
+				+ ") where row_id between {1} and {2} ";
+		return MessageFormat.format(pagedSql, sortedSql, startRow, endRow);
 	}
 
 }

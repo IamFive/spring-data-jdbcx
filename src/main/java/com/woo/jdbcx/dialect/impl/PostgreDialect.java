@@ -21,13 +21,6 @@ import org.springframework.data.domain.Pageable;
 
 public class PostgreDialect extends AbstractSQLDialect {
 	
-	public String getPageSql(String sql) {
-		StringBuilder sqlBuilder = new StringBuilder(sql.length() + 14);
-		sqlBuilder.append(sql);
-		sqlBuilder.append(" limit ? offset ?");
-		return sqlBuilder.toString();
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -35,8 +28,7 @@ public class PostgreDialect extends AbstractSQLDialect {
 	 */
 	@Override
 	public String getPageableSql(String sql, Pageable pageable) {
-		
-		return null;
+		return getPageableSqlWithLimitOffset(sql, pageable);
 	}
 	
 

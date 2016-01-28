@@ -17,14 +17,16 @@
 
 package com.woo.jdbcx.dialect.impl;
 
+import java.text.MessageFormat;
+
 import org.springframework.data.domain.Pageable;
+
+import com.woo.jdbcx.dialect.SelectSqlUtils;
 
 public class InformixDialect extends AbstractSQLDialect {
 	public String getPageSql(String sql) {
 		StringBuilder sqlBuilder = new StringBuilder(sql.length() + 40);
-		sqlBuilder.append("select skip ? first ? * from ( ");
-		sqlBuilder.append(sql);
-		sqlBuilder.append(" ) temp_t");
+		sqlBuilder.append("select skip {1} first {2} * from ({0}) temp_t");
 		return sqlBuilder.toString();
 	}
 
@@ -35,8 +37,9 @@ public class InformixDialect extends AbstractSQLDialect {
 	 */
 	@Override
 	public String getPageableSql(String sql, Pageable pageable) {
-		// TODO Auto-generated method stub
-		return null;
+		String sortedSql = SelectSqlUtils.addSort(sql, pageable.getSort());
+		String pagedSql = "select skip {1} first {2} * from ({0}) temp_t";
+		return MessageFormat.format(pagedSql, sortedSql, pageable.getOffset(), pageable.getPageSize());
 	}
 
 }

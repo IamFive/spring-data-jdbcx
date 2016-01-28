@@ -21,21 +21,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.woo.jdbcx.dialect.impl.H2Dialect;
+import com.woo.jdbcx.dialect.impl.HsqldbDialect;
+import com.woo.jdbcx.dialect.impl.MariaDialect;
 import com.woo.jdbcx.dialect.impl.MysqlDialect;
 import com.woo.jdbcx.dialect.impl.PostgreDialect;
+import com.woo.jdbcx.dialect.impl.SqliteDialect;
 
 public enum Databases {
 	//@off
     mysql(MysqlDialect.class), 
-    //    mariadb, 
-	//    sqlite, 
-	//    oracle, 
-	//    hsqldb, 
+    mariadb(MariaDialect.class), 
+    sqlite(SqliteDialect.class), 
+    hsqldb(HsqldbDialect.class), 
     postgresql(PostgreDialect.class), 
-    //    sqlserver, 
+    h2(H2Dialect.class), 
+    //sqlserver, 
+	//oracle, 
     //db2, 
     //informix, 
-    h2(H2Dialect.class), 
     //sqlserver2012;
     ;
 	//@on

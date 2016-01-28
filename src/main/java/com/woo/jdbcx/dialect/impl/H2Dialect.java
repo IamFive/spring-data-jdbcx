@@ -30,9 +30,7 @@ public class H2Dialect extends AbstractSQLDialect {
 	 */
 	@Override
 	public String getPageableSql(String sql, Pageable pageable) {
-		String pagedSql = SelectSqlUtils.getPageableSqlWithLimitOffset(sql, pageable);
-		logger.debug("paged sql is : {}, paged sql is: {}", sql, pagedSql);
-		return pagedSql;
+		return getPageableSqlWithLimitOffset(sql, pageable);
 	}
 
 }

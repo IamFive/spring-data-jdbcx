@@ -19,6 +19,37 @@ package com.woo.jdbcx.dialect.impl;
 
 import org.springframework.data.domain.Pageable;
 
+
+/**
+
+SqlServer before 2012, the best pagination SQL sample:
+<pre>
+WITH Results_CTE AS
+(
+    SELECT
+        Col1, Col2, ...,
+        ROW_NUMBER() OVER (ORDER BY SortCol1, SortCol2, ...) AS RowNum
+    FROM Table
+    WHERE <whatever>
+)
+SELECT *
+FROM Results_CTE
+WHERE RowNum >= @Offset
+AND RowNum < @Offset + @Limit
+
+
+select top {LIMIT HERE} * from (
+      select *, ROW_NUMBER() over (order by {ORDER FIELD}) as r_n_n 
+      from {YOUR TABLES} where {OTHER OPTIONAL FILTERS}
+) xx where r_n_n >={OFFSET HERE}
+</pre>
+
+
+ * 
+ * @author Woo Cupid
+ * @date 2016年1月28日
+ * @version $Revision$
+ */
 public class SqlServerDialect extends AbstractSQLDialect {
 
 	/*
@@ -28,8 +59,7 @@ public class SqlServerDialect extends AbstractSQLDialect {
 	 */
 	@Override
 	public String getPageableSql(String sql, Pageable pageable) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new RuntimeException("not implement yet");
 	}
 
 }
