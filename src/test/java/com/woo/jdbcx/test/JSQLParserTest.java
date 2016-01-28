@@ -8,6 +8,8 @@
 package com.woo.jdbcx.test;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
@@ -21,11 +23,15 @@ import net.sf.jsqlparser.statement.select.SelectBody;
  */
 public class JSQLParserTest {
 	
+	private static final Logger logger = LoggerFactory.getLogger(JSQLParserTest.class);
+
 	@Test
 	public void findOrderByTest() throws JSQLParserException {
 		String sql = "select * from member order by id asc, name desc";
 		Select parsed = (Select) CCJSqlParserUtil.parse(sql);
 		SelectBody selectBody = parsed.getSelectBody();
 	}
+
+
 
 }

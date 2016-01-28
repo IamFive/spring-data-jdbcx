@@ -17,17 +17,18 @@
 package com.woo.jdbcx.dialect.impl;
 
 import com.woo.jdbcx.dialect.SQLDialect;
-import com.woo.jdbcx.dialect.SqlParser;
+import com.woo.jdbcx.dialect.SelectSqlUtils;
 
 /**
- * @author liuzh
+ * 
+ * @author Woo Cupid
+ * @date 2016年1月28日
+ * @version $Revision$
  */
 public abstract class AbstractSQLDialect implements SQLDialect {
-	// 处理SQL
-	public static final SqlParser sqlParser = new SqlParser();
 
 	public String getCountSql(final String sql) {
-		return sqlParser.getSmartCountSql(sql);
+		return SelectSqlUtils.getCountSql(sql);
 	}
 
 }
