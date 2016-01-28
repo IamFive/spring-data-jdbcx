@@ -16,6 +16,10 @@
  *******************************************************************************/
 package com.woo.jdbcx.dialect.impl;
 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.woo.jdbcx.dialect.SQLDialect;
 import com.woo.jdbcx.dialect.SelectSqlUtils;
 
@@ -27,8 +31,12 @@ import com.woo.jdbcx.dialect.SelectSqlUtils;
  */
 public abstract class AbstractSQLDialect implements SQLDialect {
 
+	static final Logger logger = LoggerFactory.getLogger(AbstractSQLDialect.class);
+
 	public String getCountSql(final String sql) {
 		return SelectSqlUtils.getCountSql(sql);
 	}
+
+
 
 }

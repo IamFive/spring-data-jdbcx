@@ -12,6 +12,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
@@ -65,6 +66,14 @@ public class SelectSqlUtilsTest {
 		String sql1 = "select name from member where id > 10 and level = a.level";
 		String countSql1 = SelectSqlUtils.getCountSql(sql1);
 		logger.info("{}", countSql1);
+	}
+
+	@Test
+	public void getPageableSqlTest() throws JSQLParserException {
+		String sql = "with a as (select * from level limit 10) select name, count(0) from member, a where id > 10 and level = a.level group by name FOR UPDATE";
+		PageRequest pageRequest = new PageRequest(5, 10);
+		String pagedSql = SelectSqlUtils.getPageableSqlWithLimitOffset(sql, pageRequest);
+		logger.info("{}", pagedSql);
 	}
 
 }

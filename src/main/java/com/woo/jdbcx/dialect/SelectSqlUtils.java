@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
@@ -23,6 +24,7 @@ import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.select.Limit;
 import net.sf.jsqlparser.statement.select.OrderByElement;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
@@ -93,6 +95,48 @@ public class SelectSqlUtils {
 	}
 
 	/**
+	 * get pageable SQL which support limit x offset x
+	 * 
+	 * @see SelectSqlUtils#getPageableSqlWithLimitOffset(Select, Pageable)
+	 * @param sql
+	 * @param pageable
+	 * @return
+	 */
+	public static String getPageableSqlWithLimitOffset(String sql, Pageable pageable) {
+		Select select = parseSelectSql(sql);
+		getPageableSqlWithLimitOffset(select, pageable);
+		return select.toString();
+	}
+
+	/**
+	 * 
+	 * get pageable SQL which support limit x offset x
+	 * 
+	 * @param select
+	 * @param pageable
+	 */
+	public static void getPageableSqlWithLimitOffset(Select select, Pageable pageable) {
+		SelectSqlUtils.addSort(select, pageable.getSort()); // add sort expression
+		SelectBody sb = select.getSelectBody();
+		if (sb instanceof PlainSelect) {
+			Limit limit = new Limit();
+			limit.setRowCount(pageable.getPageSize());
+			limit.setOffset(pageable.getOffset());
+			((PlainSelect) sb).setLimit(limit);
+		} else if (sb instanceof SetOperationList) {
+			Limit limit = new Limit();
+			limit.setRowCount(pageable.getPageSize());
+			limit.setOffset(pageable.getOffset());
+			((SetOperationList) sb).setLimit(limit);
+		} else if (sb instanceof WithItem) {
+			// should not happen ?
+			logger.error(
+					"select body could not be a with-item, please report the issue to https://github.com/IamFive/spring-data-jdbcx");
+			throw new JdbcxPagingException(select.toString(), "SQL body could not be a with-item");
+		}
+	}
+
+	/**
 	 * @param sql
 	 * @return
 	 */
@@ -122,6 +166,18 @@ public class SelectSqlUtils {
 			Iterator<Order> iterator = sort.iterator();
 			if (iterator.hasNext()) {
 				Select select = parseSelectSql(sql);
+				addSort(select, sort);
+				return select.toString();
+			}
+		}
+
+		return sql;
+	}
+
+	public static Select addSort(Select select, Sort sort) {
+		if (sort != null) {
+			Iterator<Order> iterator = sort.iterator();
+			if (iterator.hasNext()) {
 				SelectBody sb = select.getSelectBody();
 				if (sb instanceof PlainSelect) {
 					// FIXME should we remove elements with same property name?
@@ -137,15 +193,14 @@ public class SelectSqlUtils {
 					// should not happen ?
 					logger.error(
 							"select body could not be a with-item, please report the issue to https://github.com/IamFive/spring-data-jdbcx");
-					throw new JdbcxPagingException(sql, "SQL body could not be a with-item");
+					throw new JdbcxPagingException("SQL body could not be a with-item");
 				}
-
-				return sb.toString();
 			}
 		}
 
-		return sql;
+		return select;
 	}
+
 
 	/**
 	 * 

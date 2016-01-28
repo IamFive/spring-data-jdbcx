@@ -17,12 +17,15 @@
 
 package com.woo.jdbcx;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Pageable;
@@ -35,6 +38,10 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.KeyHolder;
 
+import com.woo.jdbcx.dialect.Databases;
+import com.woo.jdbcx.dialect.SQLDialect;
+
+
 /**
  * Extends Named-Query-JDBC-Template with more friendly API
  * 
@@ -44,15 +51,33 @@ import org.springframework.jdbc.support.KeyHolder;
  */
 public abstract class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 
+	private static final Logger logger = LoggerFactory.getLogger(JdbcxDaoSupport.class);
+
+	SQLDialect dialect;
+
 	@Autowired
 	DataSource dataSource;
 
 	NamedParameterJdbcTemplate jdbcTemplate;
 
+
+	public void setDialect(SQLDialect dialect) {
+		this.dialect = dialect;
+	}
+
 	@PostConstruct
 	public void init() {
 		setDataSource(dataSource);
 		jdbcTemplate = getNamedParameterJdbcTemplate();
+
+		try {
+			String url = dataSource.getConnection().getMetaData().getURL();
+			logger.debug("[jdbcx] detect datasource connection url is : {}", url);
+			dialect = Databases.fromJdbcUrl(url).getDialect();
+			logger.debug("[jdbcx] bind dialect to : {}", dialect.getClass());
+		} catch (SQLException e) {
+			logger.error("could not get datasource connection url", e);
+		}
 	}
 
 	// ============================ multiply fields returned =====================//
@@ -67,7 +92,6 @@ public abstract class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 		// TODO
 		// 1. get count sql
 		// 2. get pageable sql
-
 		return jdbcTemplate.query(sql, paramMap, new BeanPropertyRowMapper<T>(mapResultToClass));
 	}
 

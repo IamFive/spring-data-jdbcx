@@ -19,14 +19,9 @@ package com.woo.jdbcx.dialect.impl;
 
 import org.springframework.data.domain.Pageable;
 
-public class H2Dialect extends AbstractSQLDialect {
+import com.woo.jdbcx.dialect.SelectSqlUtils;
 
-	public String getPageSql(String sql) {
-		StringBuilder sqlBuilder = new StringBuilder(sql.length() + 20);
-		sqlBuilder.append(sql);
-		sqlBuilder.append(" limit ? offset ?");
-		return sqlBuilder.toString();
-	}
+public class H2Dialect extends AbstractSQLDialect {
 
 	/*
 	 * (non-Javadoc)
@@ -35,8 +30,9 @@ public class H2Dialect extends AbstractSQLDialect {
 	 */
 	@Override
 	public String getPageableSql(String sql, Pageable pageable) {
-		// TODO Auto-generated method stub
-		return null;
+		String pagedSql = SelectSqlUtils.getPageableSqlWithLimitOffset(sql, pageable);
+		logger.debug("paged sql is : {}, paged sql is: {}", sql, pagedSql);
+		return pagedSql;
 	}
 
 }
