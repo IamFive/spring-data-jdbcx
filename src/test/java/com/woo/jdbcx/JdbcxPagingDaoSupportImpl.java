@@ -25,6 +25,6 @@ import org.springframework.stereotype.Component;
  * @version $Revision$
  */
 @Component
-public class JdbcxDaoSupportImpl extends JdbcxDaoSupport {
+public class JdbcxPagingDaoSupportImpl extends JdbcxPagingDaoSupport {
 
 }

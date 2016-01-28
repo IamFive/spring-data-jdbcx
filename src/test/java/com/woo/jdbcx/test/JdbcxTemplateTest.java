@@ -33,7 +33,7 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.woo.jdbcx.Application;
-import com.woo.jdbcx.JdbcxDaoSupportImpl;
+import com.woo.jdbcx.JdbcxPagingDaoSupportImpl;
 import com.woo.jdbcx.modal.Member;
 
 /**
@@ -48,7 +48,7 @@ public class JdbcxTemplateTest {
 	private static final Logger logger = LoggerFactory.getLogger(JdbcxTemplateTest.class);
 
 	@Autowired
-	JdbcxDaoSupportImpl jdbc;
+	JdbcxPagingDaoSupportImpl jdbc;
 
 	@Before
 	public void initdb() {

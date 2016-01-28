@@ -28,7 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource;
@@ -87,13 +86,6 @@ public abstract class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 		return jdbcTemplate.query(sql, paramMap, new BeanPropertyRowMapper<T>(mapResultToClass));
 	}
 
-	public <T> List<T> queryForListBean(String sql, Map<String, ?> paramMap, Class<T> mapResultToClass,
-			Pageable pageable) throws DataAccessException {
-		// TODO
-		// 1. get count sql
-		// 2. get pageable sql
-		return jdbcTemplate.query(sql, paramMap, new BeanPropertyRowMapper<T>(mapResultToClass));
-	}
 
 	public <T> List<T> queryForListBean(String sql, Object beanParamSource, Class<T> mapResultToClass)
 			throws DataAccessException {
@@ -101,7 +93,7 @@ public abstract class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 				new BeanPropertyRowMapper<T>(mapResultToClass));
 	}
 
-	public <T> List<T> queryForListBean(String sql, Class<T> mapResultToClass) throws DataAccessException {
+	public <T> List<T> queryForListBean(String sql, Class<T> mapResultToClass) {
 		return jdbcTemplate.query(sql, new BeanPropertyRowMapper<T>(mapResultToClass));
 	}
 
@@ -116,47 +108,47 @@ public abstract class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 		return jdbcTemplate.queryForObject(sql, paramMap, new BeanPropertyRowMapper<T>(mapResultToClass));
 	}
 
-	public <T> T queryForBean(String sql, Class<T> mapResultToClass) throws DataAccessException {
+	public <T> T queryForBean(String sql, Class<T> mapResultToClass) {
 		return jdbcTemplate.queryForObject(sql, EmptySqlParameterSource.INSTANCE,
 				new BeanPropertyRowMapper<T>(mapResultToClass));
 	}
 
-	public Map<String, Object> queryForMap(String sql, Object beanParamSource) throws DataAccessException {
+	public Map<String, Object> queryForMap(String sql, Object beanParamSource) {
 		return jdbcTemplate.queryForMap(sql, new BeanPropertySqlParameterSource(beanParamSource));
 	}
 
-	public Map<String, Object> queryForMap(String sql, Map<String, ?> paramMap) throws DataAccessException {
+	public Map<String, Object> queryForMap(String sql, Map<String, ?> paramMap) {
 		return jdbcTemplate.queryForMap(sql, paramMap);
 	}
 
-	public Map<String, Object> queryForMap(String sql) throws DataAccessException {
+	public Map<String, Object> queryForMap(String sql) {
 		return jdbcTemplate.queryForMap(sql, EmptySqlParameterSource.INSTANCE);
 	}
 
-	public List<Map<String, Object>> queryForListMap(String sql, Map<String, ?> paramMap) throws DataAccessException {
+	public List<Map<String, Object>> queryForListMap(String sql, Map<String, ?> paramMap) {
 		return jdbcTemplate.queryForList(sql, paramMap);
 	}
 
-	public List<Map<String, Object>> queryForListMap(String sql, Object beanParamSource) throws DataAccessException {
+	public List<Map<String, Object>> queryForListMap(String sql, Object beanParamSource) {
 		return jdbcTemplate.queryForList(sql, new BeanPropertySqlParameterSource(beanParamSource));
 	}
 
-	public List<Map<String, Object>> queryForListMap(String sql) throws DataAccessException {
+	public List<Map<String, Object>> queryForListMap(String sql) {
 		return jdbcTemplate.queryForList(sql, EmptySqlParameterSource.INSTANCE);
 	}
 
 	// ============================ multiply fields returned =====================//
 
 	// ============================ single field returned =====================//
-	public <T> T queryForObject(String sql, Class<T> requiredType) throws DataAccessException {
+	public <T> T queryForObject(String sql, Class<T> requiredType) {
 		return jdbcTemplate.queryForObject(sql, EmptySqlParameterSource.INSTANCE, requiredType);
 	}
 
-	public <T> T queryForObject(String sql, Object beanParamSource, Class<T> requiredType) throws DataAccessException {
+	public <T> T queryForObject(String sql, Object beanParamSource, Class<T> requiredType) {
 		return jdbcTemplate.queryForObject(sql, new BeanPropertySqlParameterSource(beanParamSource), requiredType);
 	}
 
-	public <T> T queryForObject(String sql, Map<String, ?> paramMap, Class<T> requiredType) throws DataAccessException {
+	public <T> T queryForObject(String sql, Map<String, ?> paramMap, Class<T> requiredType) {
 		return jdbcTemplate.queryForObject(sql, paramMap, requiredType);
 	}
 
@@ -170,21 +162,21 @@ public abstract class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 		return jdbcTemplate.queryForList(sql, paramMap, elementType);
 	}
 
-	public <T> List<T> queryForList(String sql, Class<T> elementType) throws DataAccessException {
+	public <T> List<T> queryForList(String sql, Class<T> elementType) {
 		return jdbcTemplate.queryForList(sql, EmptySqlParameterSource.INSTANCE, elementType);
 	}
 
 	// ============================ single field returned =====================//
 
-	public int update(String sql, Object beanParamSource) throws DataAccessException {
+	public int update(String sql, Object beanParamSource) {
 		return jdbcTemplate.update(sql, new BeanPropertySqlParameterSource(beanParamSource));
 	}
 
-	public int update(String sql, Map<String, ?> paramMap) throws DataAccessException {
+	public int update(String sql, Map<String, ?> paramMap) {
 		return jdbcTemplate.update(sql, paramMap);
 	}
 
-	public int update(String sql, Object beanParamSource, KeyHolder generatedKeyHolder) throws DataAccessException {
+	public int update(String sql, Object beanParamSource, KeyHolder generatedKeyHolder) {
 		return jdbcTemplate.update(sql, new BeanPropertySqlParameterSource(beanParamSource), generatedKeyHolder);
 	}
 
