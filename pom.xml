@@ -16,8 +16,9 @@
 		<spring-boot.version>1.2.7.RELEASE</spring-boot.version>
 		<commons-lang3.version>3.2.1</commons-lang3.version>
 		<assertj.version>2.2.0</assertj.version>
-		<java.version>1.6</java.version>
 		<jsqlparser.version>0.9.4</jsqlparser.version>
+		<freemarker.version>2.3.23</freemarker.version>
+		<java.version>1.6</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
@@ -51,6 +52,23 @@
 			<version>${jsqlparser.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.thoughtworks.xstream</groupId>
+			<artifactId>xstream</artifactId>
+			<version>1.4.5</version>
+		</dependency>
+
 		<!-- log -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -67,14 +85,8 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jdbc</artifactId>
 			<scope>test</scope>
-			<!-- 
-			<exclusions>
-				<exclusion>
-					<artifactId>tomcat-jdbc</artifactId>
-					<groupId>org.apache.tomcat</groupId>
-				</exclusion>
-			</exclusions>
-			 -->
+			<!-- <exclusions> <exclusion> <artifactId>tomcat-jdbc</artifactId> <groupId>org.apache.tomcat</groupId> 
+				</exclusion> </exclusions> -->
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -102,14 +114,9 @@
 
 		<!-- database <dependency> <groupId>org.postgresql</groupId> <artifactId>postgresql</artifactId> 
 			<version>9.4-1205-jdbc41</version> <scope>test</scope> </dependency> -->
-			
-		<!-- 
-		<dependency>
-			<groupId>com.zaxxer</groupId>
-			<artifactId>HikariCP</artifactId>
-			<scope>test</scope>
-		</dependency>
-		 -->
+
+		<!-- <dependency> <groupId>com.zaxxer</groupId> <artifactId>HikariCP</artifactId> 
+			<scope>test</scope> </dependency> -->
 	</dependencies>
 
 	<build>
