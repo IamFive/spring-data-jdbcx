@@ -17,6 +17,7 @@
 
 package com.woo.jdbcx;
 
+import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -65,10 +66,9 @@ public abstract class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 	public void init() {
 		setDataSource(dataSource);
 		try {
-			String url = dataSource.getConnection().getMetaData().getURL();
-			logger.debug("[jdbcx] detect datasource connection url is : {}", url);
-			dialect = Databases.fromJdbcUrl(url).getDialect();
-			logger.debug("[jdbcx] bind dialect to : {}", dialect.getClass());
+			DatabaseMetaData metaData = dataSource.getConnection().getMetaData();
+			dialect = Databases.fromMetaData(metaData).getDialect();
+			logger.info("[jdbcx] bind dialect to : {}", dialect.getClass());
 		} catch (SQLException e) {
 			logger.error("could not get datasource connection url", e);
 		}

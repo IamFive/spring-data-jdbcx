@@ -5,7 +5,7 @@
  * All rights reserved.
  * 
  */
-package com.woo.jdbcx.dialect;
+package com.woo.jdbcx.dialect.exception;
 
 import java.text.MessageFormat;
 
@@ -14,7 +14,7 @@ import java.text.MessageFormat;
  * @date 2016年1月28日
  * @version $Revision$
  */
-public class JdbcxPagingException extends RuntimeException {
+public class GeneratePagingSqlException extends RuntimeException {
 
 	/**
 	 * 
@@ -40,38 +40,38 @@ public class JdbcxPagingException extends RuntimeException {
 	/**
 	 * 
 	 */
-	public JdbcxPagingException() {
+	public GeneratePagingSqlException() {
 		super();
 	}
 
-	public JdbcxPagingException(String message, Throwable cause, boolean enableSuppression,
+	public GeneratePagingSqlException(String message, Throwable cause, boolean enableSuppression,
 			boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
 	}
 
-	public JdbcxPagingException(String message, Throwable cause) {
+	public GeneratePagingSqlException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
-	public JdbcxPagingException(String message) {
+	public GeneratePagingSqlException(String message) {
 		super(message);
 	}
 
-	public JdbcxPagingException(Throwable cause) {
+	public GeneratePagingSqlException(Throwable cause) {
 		super(cause);
 	}
 
 
-	public JdbcxPagingException(String originalSql, String message, Throwable cause, boolean enableSuppression,
+	public GeneratePagingSqlException(String originalSql, String message, Throwable cause, boolean enableSuppression,
 			boolean writableStackTrace) {
 		super(msgWithOriginalSql(originalSql, message), cause, enableSuppression, writableStackTrace);
 	}
 
-	public JdbcxPagingException(String originalSql, String message, Throwable cause) {
+	public GeneratePagingSqlException(String originalSql, String message, Throwable cause) {
 		super(msgWithOriginalSql(originalSql, message), cause);
 	}
 
-	public JdbcxPagingException(String originalSql, String message) {
+	public GeneratePagingSqlException(String originalSql, String message) {
 		super(msgWithOriginalSql(originalSql, message));
 	}
 

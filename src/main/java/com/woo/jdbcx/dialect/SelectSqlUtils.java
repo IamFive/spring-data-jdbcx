@@ -19,6 +19,8 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.util.Assert;
 
+import com.woo.jdbcx.dialect.exception.GeneratePagingSqlException;
+
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
@@ -134,7 +136,7 @@ public class SelectSqlUtils {
 			// should not happen ?
 			logger.error(
 					"select body could not be a with-item, please report the issue to https://github.com/IamFive/spring-data-jdbcx");
-			throw new JdbcxPagingException(select.toString(), "SQL body could not be a with-item");
+			throw new GeneratePagingSqlException(select.toString(), "SQL body could not be a with-item");
 		}
 	}
 
@@ -147,11 +149,11 @@ public class SelectSqlUtils {
 		try {
 			smt = CCJSqlParserUtil.parse(sql);
 			if (!(smt instanceof Select)) {
-				throw new JdbcxPagingException(sql, "SQL should be a legal select SQL");
+				throw new GeneratePagingSqlException(sql, "SQL should be a legal select SQL");
 			}
 			return (Select) smt;
 		} catch (JSQLParserException e) {
-			throw new JdbcxPagingException(sql, "SQL is illegal");
+			throw new GeneratePagingSqlException(sql, "SQL is illegal");
 		}
 	}
 
@@ -197,7 +199,7 @@ public class SelectSqlUtils {
 					// should not happen ?
 					logger.error(
 							"select body could not be a with-item, please report the issue to https://github.com/IamFive/spring-data-jdbcx");
-					throw new JdbcxPagingException("SQL body could not be a with-item");
+					throw new GeneratePagingSqlException("SQL body could not be a with-item");
 				}
 			}
 		}
@@ -283,7 +285,7 @@ public class SelectSqlUtils {
 			// should not happen ?
 			logger.error(
 					"select body could not be a with-item, please report the issue to https://github.com/IamFive/spring-data-jdbcx");
-			throw new JdbcxPagingException("SQL body could not be a with-item");
+			throw new GeneratePagingSqlException("SQL body could not be a with-item");
 		}
 
 
@@ -366,7 +368,7 @@ public class SelectSqlUtils {
 			// should not happen ?
 			logger.error(
 					"select body could not be a with-item, please report the issue to https://github.com/IamFive/spring-data-jdbcx");
-			throw new JdbcxPagingException("SQL body could not be a with-item");
+			throw new GeneratePagingSqlException("SQL body could not be a with-item");
 		}
 	}
 
