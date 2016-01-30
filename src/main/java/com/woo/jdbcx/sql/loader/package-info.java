@@ -14,21 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-
-package com.woo.jdbcx.dialect.impl;
-
-import org.springframework.data.domain.Pageable;
-
-public class PostgreDialect extends AbstractSQLDialect {
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.woo.jdbcx.dialect.SQLDialect#getPageableSql(java.lang.String, org.springframework.data.domain.Pageable)
-	 */
-	@Override
-	public String getPageableSql(String sql, Pageable pageable) {
-		return getPageableSqlWithLimitOffset(sql, pageable);
-	}
-
-}
+/**
+ * @author Woo Cupid
+ * @date 2016年1月30日
+ * @version $Revision$
+ */
+package com.woo.jdbcx.sql.loader;

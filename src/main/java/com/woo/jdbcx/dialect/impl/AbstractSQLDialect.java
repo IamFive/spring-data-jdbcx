@@ -16,7 +16,6 @@
  *******************************************************************************/
 package com.woo.jdbcx.dialect.impl;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -34,15 +33,15 @@ public abstract class AbstractSQLDialect implements SQLDialect {
 
 	static final Logger logger = LoggerFactory.getLogger(AbstractSQLDialect.class);
 
+	@Override
 	public String getCountSql(final String sql) {
 		return SelectSqlUtils.getCountSql(sql);
 	}
-	
+
 	public String getPageableSqlWithLimitOffset(String sql, Pageable pageable) {
 		String pagedSql = SelectSqlUtils.getPageableSqlWithLimitOffset(sql, pageable);
 		logger.debug("original sql is : {}, paged sql is: {}", sql, pagedSql);
 		return pagedSql;
 	}
-
 
 }

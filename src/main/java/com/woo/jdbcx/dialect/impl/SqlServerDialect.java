@@ -19,7 +19,6 @@ package com.woo.jdbcx.dialect.impl;
 
 import org.springframework.data.domain.Pageable;
 
-
 /**
 
 SqlServer before 2012, the best pagination SQL sample:

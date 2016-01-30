@@ -33,7 +33,6 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.KeyHolder;
 
@@ -57,18 +56,14 @@ public abstract class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 	@Autowired
 	DataSource dataSource;
 
-	NamedParameterJdbcTemplate jdbcTemplate;
-
-
 	public void setDialect(SQLDialect dialect) {
 		this.dialect = dialect;
 	}
+	
 
 	@PostConstruct
 	public void init() {
 		setDataSource(dataSource);
-		jdbcTemplate = getNamedParameterJdbcTemplate();
-
 		try {
 			String url = dataSource.getConnection().getMetaData().getURL();
 			logger.debug("[jdbcx] detect datasource connection url is : {}", url);
@@ -83,106 +78,106 @@ public abstract class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 
 	public <T> List<T> queryForListBean(String sql, Map<String, ?> paramMap, Class<T> mapResultToClass)
 			throws DataAccessException {
-		return jdbcTemplate.query(sql, paramMap, new BeanPropertyRowMapper<T>(mapResultToClass));
+		return getNamedParameterJdbcTemplate().query(sql, paramMap, new BeanPropertyRowMapper<T>(mapResultToClass));
 	}
 
 
 	public <T> List<T> queryForListBean(String sql, Object beanParamSource, Class<T> mapResultToClass)
 			throws DataAccessException {
-		return jdbcTemplate.query(sql, new BeanPropertySqlParameterSource(beanParamSource),
+		return getNamedParameterJdbcTemplate().query(sql, new BeanPropertySqlParameterSource(beanParamSource),
 				new BeanPropertyRowMapper<T>(mapResultToClass));
 	}
 
 	public <T> List<T> queryForListBean(String sql, Class<T> mapResultToClass) {
-		return jdbcTemplate.query(sql, new BeanPropertyRowMapper<T>(mapResultToClass));
+		return getNamedParameterJdbcTemplate().query(sql, new BeanPropertyRowMapper<T>(mapResultToClass));
 	}
 
 	public <T> T queryForBean(String sql, Object beanParamSource, Class<T> mapResultToClass)
 			throws DataAccessException {
-		return jdbcTemplate.queryForObject(sql, new BeanPropertySqlParameterSource(beanParamSource),
+		return getNamedParameterJdbcTemplate().queryForObject(sql, new BeanPropertySqlParameterSource(beanParamSource),
 				new BeanPropertyRowMapper<T>(mapResultToClass));
 	}
 
 	public <T> T queryForBean(String sql, Map<String, ?> paramMap, Class<T> mapResultToClass)
 			throws DataAccessException {
-		return jdbcTemplate.queryForObject(sql, paramMap, new BeanPropertyRowMapper<T>(mapResultToClass));
+		return getNamedParameterJdbcTemplate().queryForObject(sql, paramMap, new BeanPropertyRowMapper<T>(mapResultToClass));
 	}
 
 	public <T> T queryForBean(String sql, Class<T> mapResultToClass) {
-		return jdbcTemplate.queryForObject(sql, EmptySqlParameterSource.INSTANCE,
+		return getNamedParameterJdbcTemplate().queryForObject(sql, EmptySqlParameterSource.INSTANCE,
 				new BeanPropertyRowMapper<T>(mapResultToClass));
 	}
 
 	public Map<String, Object> queryForMap(String sql, Object beanParamSource) {
-		return jdbcTemplate.queryForMap(sql, new BeanPropertySqlParameterSource(beanParamSource));
+		return getNamedParameterJdbcTemplate().queryForMap(sql, new BeanPropertySqlParameterSource(beanParamSource));
 	}
 
 	public Map<String, Object> queryForMap(String sql, Map<String, ?> paramMap) {
-		return jdbcTemplate.queryForMap(sql, paramMap);
+		return getNamedParameterJdbcTemplate().queryForMap(sql, paramMap);
 	}
 
 	public Map<String, Object> queryForMap(String sql) {
-		return jdbcTemplate.queryForMap(sql, EmptySqlParameterSource.INSTANCE);
+		return getNamedParameterJdbcTemplate().queryForMap(sql, EmptySqlParameterSource.INSTANCE);
 	}
 
 	public List<Map<String, Object>> queryForListMap(String sql, Map<String, ?> paramMap) {
-		return jdbcTemplate.queryForList(sql, paramMap);
+		return getNamedParameterJdbcTemplate().queryForList(sql, paramMap);
 	}
 
 	public List<Map<String, Object>> queryForListMap(String sql, Object beanParamSource) {
-		return jdbcTemplate.queryForList(sql, new BeanPropertySqlParameterSource(beanParamSource));
+		return getNamedParameterJdbcTemplate().queryForList(sql, new BeanPropertySqlParameterSource(beanParamSource));
 	}
 
 	public List<Map<String, Object>> queryForListMap(String sql) {
-		return jdbcTemplate.queryForList(sql, EmptySqlParameterSource.INSTANCE);
+		return getNamedParameterJdbcTemplate().queryForList(sql, EmptySqlParameterSource.INSTANCE);
 	}
 
 	// ============================ multiply fields returned =====================//
 
 	// ============================ single field returned =====================//
 	public <T> T queryForObject(String sql, Class<T> requiredType) {
-		return jdbcTemplate.queryForObject(sql, EmptySqlParameterSource.INSTANCE, requiredType);
+		return getNamedParameterJdbcTemplate().queryForObject(sql, EmptySqlParameterSource.INSTANCE, requiredType);
 	}
 
 	public <T> T queryForObject(String sql, Object beanParamSource, Class<T> requiredType) {
-		return jdbcTemplate.queryForObject(sql, new BeanPropertySqlParameterSource(beanParamSource), requiredType);
+		return getNamedParameterJdbcTemplate().queryForObject(sql, new BeanPropertySqlParameterSource(beanParamSource), requiredType);
 	}
 
 	public <T> T queryForObject(String sql, Map<String, ?> paramMap, Class<T> requiredType) {
-		return jdbcTemplate.queryForObject(sql, paramMap, requiredType);
+		return getNamedParameterJdbcTemplate().queryForObject(sql, paramMap, requiredType);
 	}
 
 	public <T> List<T> queryForList(String sql, Object beanParamSource, Class<T> elementType)
 			throws DataAccessException {
-		return jdbcTemplate.queryForList(sql, new BeanPropertySqlParameterSource(beanParamSource), elementType);
+		return getNamedParameterJdbcTemplate().queryForList(sql, new BeanPropertySqlParameterSource(beanParamSource), elementType);
 	}
 
 	public <T> List<T> queryForList(String sql, Map<String, ?> paramMap, Class<T> elementType)
 			throws DataAccessException {
-		return jdbcTemplate.queryForList(sql, paramMap, elementType);
+		return getNamedParameterJdbcTemplate().queryForList(sql, paramMap, elementType);
 	}
 
 	public <T> List<T> queryForList(String sql, Class<T> elementType) {
-		return jdbcTemplate.queryForList(sql, EmptySqlParameterSource.INSTANCE, elementType);
+		return getNamedParameterJdbcTemplate().queryForList(sql, EmptySqlParameterSource.INSTANCE, elementType);
 	}
 
 	// ============================ single field returned =====================//
 
 	public int update(String sql, Object beanParamSource) {
-		return jdbcTemplate.update(sql, new BeanPropertySqlParameterSource(beanParamSource));
+		return getNamedParameterJdbcTemplate().update(sql, new BeanPropertySqlParameterSource(beanParamSource));
 	}
 
 	public int update(String sql, Map<String, ?> paramMap) {
-		return jdbcTemplate.update(sql, paramMap);
+		return getNamedParameterJdbcTemplate().update(sql, paramMap);
 	}
 
 	public int update(String sql, Object beanParamSource, KeyHolder generatedKeyHolder) {
-		return jdbcTemplate.update(sql, new BeanPropertySqlParameterSource(beanParamSource), generatedKeyHolder);
+		return getNamedParameterJdbcTemplate().update(sql, new BeanPropertySqlParameterSource(beanParamSource), generatedKeyHolder);
 	}
 
 	public int update(String sql, Object beanParamSource, KeyHolder generatedKeyHolder, String[] keyColumnNames)
 			throws DataAccessException {
-		return jdbcTemplate.update(sql, new BeanPropertySqlParameterSource(beanParamSource), generatedKeyHolder,
+		return getNamedParameterJdbcTemplate().update(sql, new BeanPropertySqlParameterSource(beanParamSource), generatedKeyHolder,
 				keyColumnNames);
 	}
 
@@ -194,7 +189,7 @@ public abstract class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 			batchArgs[i] = new MapSqlParameterSource(values);
 			i++;
 		}
-		return jdbcTemplate.batchUpdate(sql, batchArgs);
+		return getNamedParameterJdbcTemplate().batchUpdate(sql, batchArgs);
 	}
 	
 	public final int[] batchUpdate(String sql, List<?> batchArgs) {
@@ -202,7 +197,7 @@ public abstract class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 		for (int i = 0; i < batchArgs.size(); i++) {
 			params[i] = new BeanPropertySqlParameterSource(batchArgs.get(i));
 		}
-		return jdbcTemplate.batchUpdate(sql, params);
+		return getNamedParameterJdbcTemplate().batchUpdate(sql, params);
 	}
 
 }

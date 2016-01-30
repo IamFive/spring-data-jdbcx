@@ -19,8 +19,6 @@ package com.woo.jdbcx.dialect.impl;
 
 import org.springframework.data.domain.Pageable;
 
-import com.woo.jdbcx.dialect.SelectSqlUtils;
-
 public class MariaDialect extends AbstractSQLDialect {
 
 	/*

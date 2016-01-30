@@ -21,7 +21,6 @@ import org.springframework.data.domain.Pageable;
 
 public class HsqldbDialect extends AbstractSQLDialect {
 
-
 	/*
 	 * (non-Javadoc)
 	 * 
