@@ -181,7 +181,6 @@ public abstract class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 				keyColumnNames);
 	}
 
-	@SafeVarargs
 	public final int[] batchUpdate(String sql, Map<String, ?>... batchValues) {
 		SqlParameterSource[] batchArgs = new SqlParameterSource[batchValues.length];
 		int i = 0;

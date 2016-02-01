@@ -44,10 +44,6 @@ public class GeneratePagingSqlException extends RuntimeException {
 		super();
 	}
 
-	public GeneratePagingSqlException(String message, Throwable cause, boolean enableSuppression,
-			boolean writableStackTrace) {
-		super(message, cause, enableSuppression, writableStackTrace);
-	}
 
 	public GeneratePagingSqlException(String message, Throwable cause) {
 		super(message, cause);
@@ -61,11 +57,6 @@ public class GeneratePagingSqlException extends RuntimeException {
 		super(cause);
 	}
 
-
-	public GeneratePagingSqlException(String originalSql, String message, Throwable cause, boolean enableSuppression,
-			boolean writableStackTrace) {
-		super(msgWithOriginalSql(originalSql, message), cause, enableSuppression, writableStackTrace);
-	}
 
 	public GeneratePagingSqlException(String originalSql, String message, Throwable cause) {
 		super(msgWithOriginalSql(originalSql, message), cause);

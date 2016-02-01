@@ -70,8 +70,9 @@ public enum Databases {
 	public SQLDialect getDialect() {
 		try {
 			return this.dialect.newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
+		} catch (Exception e) {
 			// should not happen
+			logger.error("failed to create dialect instance", e);
 		}
 		return null;
 	}
