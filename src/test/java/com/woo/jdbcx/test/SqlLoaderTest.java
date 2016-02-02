@@ -9,6 +9,8 @@ package com.woo.jdbcx.test;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +21,7 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.woo.jdbcx.Application;
+import com.woo.jdbcx.sql.loader.SqlLoader;
 
 import freemarker.core.ParseException;
 import freemarker.template.Configuration;
@@ -41,6 +44,9 @@ public class SqlLoaderTest {
 	@Autowired
 	Configuration cfg;
 
+	@Autowired
+	SqlLoader sqlLoader;
+
 	@Test
 	public void loadSqlTest() throws TemplateNotFoundException, MalformedTemplateNameException, ParseException,
 			IOException, TemplateException {
@@ -48,6 +54,17 @@ public class SqlLoaderTest {
 		StringWriter sw = new StringWriter();
 		template.process(new Object(), sw);
 		logger.info("{}", sw);
+	}
+
+	@Test
+	public void loadSql2Test() {
+		String sql = sqlLoader.getSql("member.select.all.columns");
+		logger.info(sql);
+
+		Map<String, String> context = new HashMap<String, String>();
+		context.put("id", "1");
+		String sql2 = sqlLoader.getSql("member.select.all.columns", context);
+		logger.info(sql2);
 	}
 
 }

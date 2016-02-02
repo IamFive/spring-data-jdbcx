@@ -47,7 +47,6 @@ public class Configurations {
 	private DataSourceProperties properties;
 
 	@Bean
-	@ConfigurationProperties(prefix = DataSourceProperties.PREFIX)
 	public DataSource dataSourceSpied() {
 		DataSourceBuilder factory = DataSourceBuilder.create(this.properties.getClassLoader())
 				.driverClassName(this.properties.getDriverClassName()).url(this.properties.getUrl())
@@ -56,19 +55,28 @@ public class Configurations {
 		// return factory.build();
 	}
 
+	@ConfigurationProperties(prefix = "spring.jdbcx.sql")
 	@org.springframework.context.annotation.Configuration
 	public static class FreeMarkerSqlTemplateLoader {
+
+		String templatePath;
 
 		@Bean(name = "sql-template-loader")
 		public TemplateLoader sqlTemplateConfiguration() throws IOException {
 			SqlTemplateLoaderFactory sqlTemplateFactory = new SqlTemplateLoaderFactory();
-			sqlTemplateFactory.setLocations(new String[] { "classpath:/sql-template/" });
+			sqlTemplateFactory.setLocations(new String[] { templatePath });
 			return sqlTemplateFactory.createSqlTemplateLoader();
 		}
+
+		public void setTemplatePath(String templatePath) {
+			this.templatePath = templatePath;
+		}
+
 	}
 
 	@org.springframework.context.annotation.Configuration
 	public static class FreeMarkerConfiguration {
+
 		@Resource(name = "sql-template-loader")
 		protected TemplateLoader sqlTemplateLoader;
 
