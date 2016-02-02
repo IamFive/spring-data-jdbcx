@@ -28,8 +28,11 @@ import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.dao.DataAccessException;
+import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource;
@@ -52,7 +55,11 @@ public abstract class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 
 	private static final Logger logger = LoggerFactory.getLogger(JdbcxDaoSupport.class);
 
-	private HashMap<Class<?>, BeanPropertyRowMapper<?>> beanPropsRowMapperMapper = new HashMap<Class<?>, BeanPropertyRowMapper<?>>();
+	HashMap<Class<?>, BeanPropertyRowMapper<?>> beanPropsRowMapperMapper = new HashMap<Class<?>, BeanPropertyRowMapper<?>>();
+
+	// used to convert some special jdbc value type to java object
+	@Autowired(required = false)
+	ConversionService conversionService;
 
 	SQLDialect dialect;
 
@@ -61,6 +68,10 @@ public abstract class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 
 	public void setDialect(SQLDialect dialect) {
 		this.dialect = dialect;
+	}
+
+	public void setConversionService(ConversionService conversionService) {
+		this.conversionService = conversionService;
 	}
 
 	@PostConstruct
@@ -75,12 +86,45 @@ public abstract class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	protected <T> BeanPropertyRowMapper<T> getBeanPropsRowMapper(Class<T> mapResultToClass) {
-		if (!beanPropsRowMapperMapper.containsKey(mapResultToClass)) {
-			beanPropsRowMapperMapper.put(mapResultToClass, new BeanPropertyRowMapper<T>(mapResultToClass));
+	public static class JdbcxBeanPropertyRowMapper<T> extends BeanPropertyRowMapper<T> {
+
+		private ConversionService cs;
+
+		public JdbcxBeanPropertyRowMapper() {
+			super();
 		}
-		return (BeanPropertyRowMapper<T>) beanPropsRowMapperMapper.get(mapResultToClass);
+
+		public JdbcxBeanPropertyRowMapper(Class<T> mappedClass, boolean checkFullyPopulated) {
+			super(mappedClass, checkFullyPopulated);
+		}
+
+		public JdbcxBeanPropertyRowMapper(Class<T> mappedClass) {
+			super(mappedClass);
+		}
+
+		public JdbcxBeanPropertyRowMapper(Class<T> mappedClass, final ConversionService cs) {
+			super(mappedClass);
+			this.cs = cs;
+		}
+
+		@Override
+		protected void initBeanWrapper(BeanWrapper bw) {
+			super.initBeanWrapper(bw);
+			if (cs == null) {
+				cs = new DefaultFormattingConversionService(true);
+			}
+			bw.setConversionService(cs);
+		}
+
+	}
+
+	@SuppressWarnings("unchecked")
+	protected <T> JdbcxBeanPropertyRowMapper<T> getBeanPropsRowMapper(Class<T> mapResultToClass) {
+		if (!beanPropsRowMapperMapper.containsKey(mapResultToClass)) {
+			beanPropsRowMapperMapper.put(mapResultToClass,
+					new JdbcxBeanPropertyRowMapper<T>(mapResultToClass, conversionService));
+		}
+		return (JdbcxBeanPropertyRowMapper<T>) beanPropsRowMapperMapper.get(mapResultToClass);
 	}
 
 	// ============================ multiply fields returned =====================//

@@ -79,14 +79,8 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jdbc</artifactId>
 			<scope>test</scope>
-			<!-- 
-			<exclusions>
-				<exclusion>
-					<artifactId>tomcat-jdbc</artifactId>
-					<groupId>org.apache.tomcat</groupId>
-				</exclusion>
-			</exclusions>
-			 -->
+			<!-- <exclusions> <exclusion> <artifactId>tomcat-jdbc</artifactId> <groupId>org.apache.tomcat</groupId> 
+				</exclusion> </exclusions> -->
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -112,15 +106,20 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- database <dependency> <groupId>org.postgresql</groupId> <artifactId>postgresql</artifactId> 
-			<version>9.4-1205-jdbc41</version> <scope>test</scope> </dependency> -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>9.4-1205-jdbc41</version>
+			<scope>test</scope>
+		</dependency>
+		
 		<!-- 
 		<dependency>
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP</artifactId>
 			<scope>test</scope>
 		</dependency>
-		 -->
+		-->
 	</dependencies>
 
 	<build>
