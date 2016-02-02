@@ -12,8 +12,12 @@ Spring-data-jdbcx is an extention for spring-jdbc-template. Spring-data-jdbcx ma
 - [x] you can still use the API by get original template
 
 ### sql template support
-- [ ] use freemarker as template engineer - (dynamic sql benifed from freemarker)
-- [ ] use seperated xml to define sql templates
+- [x] use freemarker as template engineer - (dynamic sql benifed from freemarker)
+- [x] use seperated xml to define sql templates
+
+### customer converter
+- [x] you can inject a customer converter service for the type not support by default
+- [x] PGobject to Map/List/Bean converter
 
 
 ## why spring-data-jdbcx
