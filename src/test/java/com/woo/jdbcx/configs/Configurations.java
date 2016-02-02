@@ -27,8 +27,11 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.convert.ConversionService;
+import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.stereotype.Component;
 
+import com.woo.jdbcx.convertor.PGObjectConverter;
 import com.woo.jdbcx.sql.loader.SqlTemplateLoaderFactory;
 
 import freemarker.cache.TemplateLoader;
@@ -43,17 +46,22 @@ import net.sf.log4jdbc.sql.jdbcapi.DataSourceSpy;
 @Component
 public class Configurations {
 
-	@Autowired
-	private DataSourceProperties properties;
+	@org.springframework.context.annotation.Configuration
+	public static class SpiedDatasourceConfig {
 
-	@Bean
-	public DataSource dataSourceSpied() {
-		DataSourceBuilder factory = DataSourceBuilder.create(this.properties.getClassLoader())
-				.driverClassName(this.properties.getDriverClassName()).url(this.properties.getUrl())
-				.username(this.properties.getUsername()).password(this.properties.getPassword());
-		return new DataSourceSpy(factory.build());
-		// return factory.build();
+		@Autowired
+		private DataSourceProperties properties;
+
+		@Bean
+		public DataSource dataSourceSpied() {
+			DataSourceBuilder factory = DataSourceBuilder.create(this.properties.getClassLoader())
+					.driverClassName(this.properties.getDriverClassName()).url(this.properties.getUrl())
+					.username(this.properties.getUsername()).password(this.properties.getPassword());
+			return new DataSourceSpy(factory.build());
+			// return factory.build();
+		}
 	}
+
 
 	@ConfigurationProperties(prefix = "spring.jdbcx.sql")
 	@org.springframework.context.annotation.Configuration
@@ -87,6 +95,19 @@ public class Configurations {
 			configuration.setTemplateUpdateDelayMilliseconds(0);
 			configuration.setDefaultEncoding("UTF-8");
 			return configuration;
+		}
+	}
+
+	@org.springframework.context.annotation.Configuration
+	public static class ConversionServiceConfig {
+
+		@Bean
+		protected ConversionService buildConversionService() {
+			DefaultFormattingConversionService cs = new DefaultFormattingConversionService(true);
+			//			cs.addConverter(String.class, Date.class, new StringToDateConverter());
+			//			cs.addConverter(String.class, Timestamp.class, new StringToDateConverter());
+			cs.addConverter(new PGObjectConverter(cs));
+			return cs;
 		}
 	}
 
