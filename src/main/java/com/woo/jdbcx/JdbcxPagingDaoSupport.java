@@ -14,7 +14,6 @@ import java.util.Map;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource;
 
@@ -32,7 +31,7 @@ public class JdbcxPagingDaoSupport extends JdbcxDaoSupport {
 		if (count > pageable.getOffset()) {
 			String pageableSql = dialect.getPageableSql(sql, pageable);
 			List<T> list = getNamedParameterJdbcTemplate().query(pageableSql, paramMap,
-					new BeanPropertyRowMapper<T>(mapResultToClass));
+					getBeanPropsRowMapper(mapResultToClass));
 			return new PageImpl<T>(list, pageable, count);
 		} else {
 			return new PageImpl<T>(Collections.<T> emptyList(), pageable, count);
@@ -47,7 +46,7 @@ public class JdbcxPagingDaoSupport extends JdbcxDaoSupport {
 		if (count > pageable.getOffset()) {
 			String pageableSql = dialect.getPageableSql(sql, pageable);
 			List<T> list = getNamedParameterJdbcTemplate().query(pageableSql, paramSource,
-					new BeanPropertyRowMapper<T>(mapResultToClass));
+					getBeanPropsRowMapper(mapResultToClass));
 			return new PageImpl<T>(list, pageable, count);
 		} else {
 			return new PageImpl<T>(Collections.<T> emptyList(), pageable, count);
@@ -59,8 +58,7 @@ public class JdbcxPagingDaoSupport extends JdbcxDaoSupport {
 		Integer count = queryForObject(countSql, Integer.class);
 		if (count > pageable.getOffset()) {
 			String pageableSql = dialect.getPageableSql(sql, pageable);
-			List<T> list = getNamedParameterJdbcTemplate().query(pageableSql,
-					new BeanPropertyRowMapper<T>(mapResultToClass));
+			List<T> list = getNamedParameterJdbcTemplate().query(pageableSql, getBeanPropsRowMapper(mapResultToClass));
 			return new PageImpl<T>(list, pageable, count);
 		} else {
 			return new PageImpl<T>(Collections.<T> emptyList(), pageable, count);
