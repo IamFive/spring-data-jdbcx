@@ -58,16 +58,17 @@ public class PGObjectConverter implements ConditionalGenericConverter {
 				String type = pgobject.getType();
 				String value = pgobject.getValue();
 				if ("jsonb".equals(type) || "json".equals(type)) {
-					// TODO convert json value to target
-					TypeDescriptor elementTypeDescriptor = targetType.getElementTypeDescriptor();
 					ResolvableType resolvableType = targetType.getResolvableType();
 					if (resolvableType.getRawClass().isAssignableFrom(Map.class)) {
 						HashMap<String, Object> mapBean = JsonMapper.nonEmptyMapper().getMapBean(value, String.class,
 								Object.class);
 						return mapBean;
-					} else if (elementTypeDescriptor.isCollection()) {
+					} else if (resolvableType.getRawClass().isAssignableFrom(List.class)) {
 						List<Object> mapBean = JsonMapper.nonEmptyMapper().getListBean(value, Object.class);
 						return mapBean;
+					} else {
+						Object bean = JsonMapper.nonEmptyMapper().getBean(value, resolvableType.getRawClass());
+						return bean;
 					}
 				} else if ("array".equals(type)) {
 					//TODO
