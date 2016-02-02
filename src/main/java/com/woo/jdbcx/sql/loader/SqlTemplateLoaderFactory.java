@@ -8,6 +8,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +22,7 @@ import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.woo.jdbcx.sql.loader.XmlTemplateFactory.XmlTemplateLoader;
+import com.woo.jdbcx.sql.loader.SqlTemplateLoaderFactory.SqlTemplateLoader;
 
 import freemarker.cache.StringTemplateLoader;
 
@@ -29,7 +33,7 @@ import freemarker.cache.StringTemplateLoader;
 
 spring xml configuration sample:
 <pre>
-<bean id="xmlTemplate" class="studio.five.lol.base.freemarker.XmlTemplateFactory" >
+<bean id="xmlTemplate" class="com.woo.jdbcx.sql.loader.SqlTemplateLoaderFactory.SqlTemplateLoader" >
 	<property name="locations">
 		<list>
 			<value>classpath:/templates/</value>
@@ -54,20 +58,29 @@ spring xml configuration sample:
 </bean>
 </pre>
  */
-public class XmlTemplateFactory implements FactoryBean<XmlTemplateLoader>, InitializingBean {
+public class SqlTemplateLoaderFactory implements FactoryBean<SqlTemplateLoader>, InitializingBean {
 
-	private static Logger logger = LoggerFactory.getLogger(XmlTemplateFactory.class);
+	private static Logger logger = LoggerFactory.getLogger(SqlTemplateLoaderFactory.class);
 
 	private ResourceLoader resourceLoader = new DefaultResourceLoader();
-	private String[] locations;
 
-	private XmlTemplateLoader templateLoader = new XmlTemplateLoader();
+	private String[] locations;
+	private SqlTemplateLoader sqlTemplateLoader = new SqlTemplateLoader();
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		createSqlTemplateLoader();
+	}
+
+	/**
+	 * @return 
+	 * @throws IOException
+	 */
+	public SqlTemplateLoader createSqlTemplateLoader() throws IOException {
 		for (String path : locations) {
 			loadTemplates(path);
 		}
+		return sqlTemplateLoader;
 	}
 
 	/**
@@ -82,18 +95,18 @@ public class XmlTemplateFactory implements FactoryBean<XmlTemplateLoader>, Initi
 	public void loadTemplates(String path) throws IOException {
 		Resource r = resourceLoader.getResource(path);
 		if (r.exists()) {
-			List<XmlTemplate> templates = new ArrayList<XmlTemplate>();
+			List<SqlTemplate> templates = new ArrayList<SqlTemplate>();
 			try {
-				logger.info("load xml freemarker template from : {}", r.getFile().getAbsolutePath());
+				logger.info("load template from : {}", r.getFile().getAbsolutePath());
 				templates = parseTemplate(r.getFile());
 			} catch (Exception e) {
 				InputStream is = r.getInputStream();
 				templates = parseTemplate(is);
 			}
 
-			for (XmlTemplate xmlTemplate : templates) {
-				templateLoader.putTemplate(xmlTemplate.getName(), xmlTemplate.getTemplate(), xmlTemplate.getLastModified());
-				templateLoader.addMapper(templateLoader.findTemplateSource(xmlTemplate.getName()), xmlTemplate.getTplFilePath());
+			for (SqlTemplate xmlTemplate : templates) {
+				sqlTemplateLoader.putTemplate(xmlTemplate.getName(), xmlTemplate.getTemplate(), xmlTemplate.getLastModified());
+				sqlTemplateLoader.addMapper(sqlTemplateLoader.findTemplateSource(xmlTemplate.getName()), xmlTemplate.getTplFilePath());
 			}
 		}
 	}
@@ -105,43 +118,45 @@ public class XmlTemplateFactory implements FactoryBean<XmlTemplateLoader>, Initi
 	 * @return
 	 * @throws IOException
 	 */
-	public static List<XmlTemplate> parseTemplate(InputStream is) throws IOException {
+	public static List<SqlTemplate> parseTemplate(InputStream is) throws IOException {
 		String content = IOUtils.toString(is);
-		List<XmlTemplate> templates = XmlHelper.fromXML(content, XmlTemplate.class);
-		for (XmlTemplate xmlTemplate : templates) {
-			xmlTemplate.setLastModified(new Date().getTime());
-			xmlTemplate.setTplFilePath("");
+		List<SqlTemplate> list = new ArrayList<SqlTemplate>();
+		SqlTemplates templates = SqlTemplateParser.fromXML(content);
+		for (SqlTemplate sqlTemplate : templates.getTemplates()) {
+			sqlTemplate.setLastModified(new Date().getTime());
+			sqlTemplate.setTplFilePath("");
+			list.add(sqlTemplate);
 		}
-		return templates;
+		return list;
 	}
 
-	public static List<XmlTemplate> parseTemplate(File file) {
-		List<XmlTemplate> result = new ArrayList<XmlTemplate>();
+	public static List<SqlTemplate> parseTemplate(File file) {
+		List<SqlTemplate> result = new ArrayList<SqlTemplate>();
 		if (file.isFile()) {
-			List<XmlTemplate> templates = XmlHelper.fromXML(file, XmlTemplate.class);
-			for (XmlTemplate xmlTemplate : templates) {
-				xmlTemplate.setLastModified(file.lastModified());
-				xmlTemplate.setTplFilePath(file.getAbsolutePath());
+			logger.info("load template from : {}", file.getAbsolutePath());
+			SqlTemplates templates = SqlTemplateParser.fromXML(file);
+			for (SqlTemplate sqlTemplate : templates.getTemplates()) {
+				sqlTemplate.setLastModified(file.lastModified());
+				sqlTemplate.setTplFilePath(file.getAbsolutePath());
+				result.add(sqlTemplate);
 			}
-			result.addAll(templates);
 		} else if (file.isDirectory()) {
 			File[] files = file.listFiles();
 			for (File f : files) {
 				result.addAll(parseTemplate(f));
 			}
 		}
-
 		return result;
 	}
 
 	@Override
-	public XmlTemplateLoader getObject() throws Exception {
-		return templateLoader;
+	public SqlTemplateLoader getObject() throws Exception {
+		return sqlTemplateLoader;
 	}
 
 	@Override
-	public Class<XmlTemplateLoader> getObjectType() {
-		return XmlTemplateLoader.class;
+	public Class<SqlTemplateLoader> getObjectType() {
+		return SqlTemplateLoader.class;
 	}
 
 	@Override
@@ -157,15 +172,12 @@ public class XmlTemplateFactory implements FactoryBean<XmlTemplateLoader>, Initi
 		this.locations = locations;
 	}
 
-	public XmlTemplateLoader getTemplateLoader() {
-		return templateLoader;
+	public SqlTemplateLoader getSqlTemplateLoader() {
+		return sqlTemplateLoader;
 	}
 
-	public void setTemplateLoader(XmlTemplateLoader templateLoader) {
-		this.templateLoader = templateLoader;
-	}
 
-	public static class XmlTemplateLoader extends StringTemplateLoader {
+	public static class SqlTemplateLoader extends StringTemplateLoader {
 
 		private HashMap<Object, String> resourceMapper = new HashMap<Object, String>();
 
@@ -180,8 +192,8 @@ public class XmlTemplateFactory implements FactoryBean<XmlTemplateLoader>, Initi
 			Object stringTemplateSource = super.findTemplateSource(name);
 			if (stringTemplateSource != null && resourceMapper.containsKey(stringTemplateSource)) {
 				String path = resourceMapper.get(stringTemplateSource);
-				List<XmlTemplate> tpls = parseTemplate(new File(path));
-				for (XmlTemplate xmlTemplate : tpls) {
+				List<SqlTemplate> tpls = parseTemplate(new File(path));
+				for (SqlTemplate xmlTemplate : tpls) {
 					putTemplate(xmlTemplate.getName(), xmlTemplate.getTemplate(), xmlTemplate.getLastModified());
 					addMapper(super.findTemplateSource(name), xmlTemplate.getTplFilePath());
 				}
@@ -209,10 +221,37 @@ public class XmlTemplateFactory implements FactoryBean<XmlTemplateLoader>, Initi
 
 	}
 
-	@XStreamAlias(value = "XmlTemplate")
-	public static class XmlTemplate {
+	@XmlRootElement(name = "Templates")
+	@XmlAccessorType(XmlAccessType.FIELD)
+	public static class SqlTemplates {
 
+		@XmlElement(name = "Template")
+		List<SqlTemplate> templates = new ArrayList<SqlTemplate>();
+
+		/**
+		 * @return the templates
+		 */
+		public List<SqlTemplate> getTemplates() {
+			return templates;
+		}
+
+		/**
+		 * @param templates the templates to set
+		 */
+		public void setTemplates(List<SqlTemplate> templates) {
+			this.templates = templates;
+		}
+
+
+	}
+
+	@XmlRootElement(name = "Template")
+	@XmlAccessorType(XmlAccessType.FIELD)
+	public static class SqlTemplate {
+
+		@XmlElement(name = "name")
 		private String name;
+		@XmlElement(name = "template")
 		private String template;
 		private long lastModified;
 		private String tplFilePath;
@@ -243,7 +282,7 @@ public class XmlTemplateFactory implements FactoryBean<XmlTemplateLoader>, Initi
 
 		@Override
 		public String toString() {
-			return "XmlTemplate [name=" + name + ", template=" + template + ", lastModified=" + lastModified + "]";
+			return "SqlTemplate [name=" + name + ", template=" + template + ", lastModified=" + lastModified + "]";
 		}
 
 		/**

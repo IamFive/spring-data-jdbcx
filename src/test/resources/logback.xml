@@ -15,19 +15,7 @@
 		</encoder>
 	</appender>
 
-	<appender name="rollingFile"
-		class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>logs/hunter-web.log</file>
-		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>logs/hunter-web.%d{yyyy-MM-dd}.log</fileNamePattern>
-		</rollingPolicy>
-		<encoder>
-			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-		</encoder>
-	</appender>
-
 	<!-- project default level -->
-
 	<logger name="jdbc.sqltiming" level="info" />
 	<logger name="jdbc.sqlonly" level="ERROR" />
 	<logger name="jdbc.resultset" level="ERROR" />
@@ -37,6 +25,5 @@
 
 	<root level="INFO">
 		<appender-ref ref="console" />
-		<appender-ref ref="rollingFile" />
 	</root>
 </configuration>

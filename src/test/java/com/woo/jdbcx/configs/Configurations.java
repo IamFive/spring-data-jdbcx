@@ -17,6 +17,9 @@
 
 package com.woo.jdbcx.configs;
 
+import java.io.IOException;
+
+import javax.annotation.Resource;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import com.woo.jdbcx.sql.loader.SqlTemplateLoaderFactory;
+
+import freemarker.cache.TemplateLoader;
+import freemarker.template.Configuration;
 import net.sf.log4jdbc.sql.jdbcapi.DataSourceSpy;
 
 /**
@@ -39,7 +46,6 @@ public class Configurations {
 	@Autowired
 	private DataSourceProperties properties;
 
-
 	@Bean
 	@ConfigurationProperties(prefix = DataSourceProperties.PREFIX)
 	public DataSource dataSourceSpied() {
@@ -50,6 +56,30 @@ public class Configurations {
 		// return factory.build();
 	}
 
+	@org.springframework.context.annotation.Configuration
+	public static class FreeMarkerSqlTemplateLoader {
 
+		@Bean(name = "sql-template-loader")
+		public TemplateLoader sqlTemplateConfiguration() throws IOException {
+			SqlTemplateLoaderFactory sqlTemplateFactory = new SqlTemplateLoaderFactory();
+			sqlTemplateFactory.setLocations(new String[] { "classpath:/sql-template/" });
+			return sqlTemplateFactory.createSqlTemplateLoader();
+		}
+	}
+
+	@org.springframework.context.annotation.Configuration
+	public static class FreeMarkerConfiguration {
+		@Resource(name = "sql-template-loader")
+		protected TemplateLoader sqlTemplateLoader;
+
+		@Bean
+		protected Configuration buildFreemarkerConfiguration() {
+			Configuration configuration = new Configuration(Configuration.VERSION_2_3_23);
+			configuration.setTemplateLoader(sqlTemplateLoader);
+			configuration.setTemplateUpdateDelayMilliseconds(0);
+			configuration.setDefaultEncoding("UTF-8");
+			return configuration;
+		}
+	}
 
 }

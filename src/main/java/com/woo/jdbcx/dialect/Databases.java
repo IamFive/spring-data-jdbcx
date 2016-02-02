@@ -48,10 +48,10 @@ public enum Databases {
     hsqldb("HSQL Database Engine",HsqldbDialect.class), 
     postgresql("PostgreSQL",PostgreDialect.class), 
     h2("H2",H2Dialect.class), 
-    //sqlserver, 
 	oracle("Oracle", OracleDialect.class), 
     db2("DB2", Db2Dialect.class), 
-    informix("", InformixDialect.class), 
+    informix("informix", InformixDialect.class), 
+    //sqlserver, 
     //sqlserver2012;
     ;
 	//@on

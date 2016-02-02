@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<list>
-	<XmlTemplate>
+<Templates>
+	<Template>
 		<name>member.select.all.columns</name>
 		<template><![CDATA[
-			select * from member 
-			where 
-				1 = 1 <#if id??>and id = :id</#if>
-		]]></template>
-	</XmlTemplate>
-</list>
+				select * from member 
+				where 
+					1 = 1 <#if id??>and id = :id</#if>
+			]]></template>
+	</Template>
+</Templates>
