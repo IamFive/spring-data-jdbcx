@@ -30,7 +30,6 @@ public class PageableTest {
 		int pageNumber = pr.getPageNumber();
 		int limit = pr.getPageSize();
 		logger.info("offset : {}, page number : {}", offset, pageNumber);
-		
 		Assert.assertEquals(offset, 10);
 		Assert.assertEquals(limit, 10);
 	}

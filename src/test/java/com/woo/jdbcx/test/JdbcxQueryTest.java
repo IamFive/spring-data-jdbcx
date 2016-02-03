@@ -39,7 +39,7 @@ import com.woo.jdbcx.modal.Member;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
-public class JdbcxTemplateQueryTest {
+public class JdbcxQueryTest {
 
 
 	@Autowired
@@ -82,7 +82,6 @@ public class JdbcxTemplateQueryTest {
 		m.setName("woo");
 		Boolean isAdmin = jdbc.queryForObject("select is_admin from member where name = :name", m, Boolean.class);
 		Assert.assertTrue(isAdmin);
-
 	}
 
 }

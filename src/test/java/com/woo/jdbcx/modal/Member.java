@@ -18,7 +18,7 @@
 package com.woo.jdbcx.modal;
 
 import java.util.Date;
-import java.util.List;
+import java.util.Map;
 
 public class Member {
 
@@ -34,7 +34,8 @@ public class Member {
 
 	private Boolean isAdmin;
 
-	private List<Integer> profile;
+	//	private List<Integer> profile;
+	private Map<String, Object> profile;
 
 	/**
 	 * @return id
@@ -121,17 +122,18 @@ public class Member {
 	}
 
 
+
 	/**
 	 * @return the profile
 	 */
-	public List<Integer> getProfile() {
+	public Map<String, Object> getProfile() {
 		return profile;
 	}
 
 	/**
 	 * @param profile the profile to set
 	 */
-	public void setProfile(List<Integer> profile) {
+	public void setProfile(Map<String, Object> profile) {
 		this.profile = profile;
 	}
 

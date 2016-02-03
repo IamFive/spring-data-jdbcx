@@ -9,7 +9,9 @@ package com.woo.jdbcx.test;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
@@ -21,6 +23,8 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.woo.jdbcx.Application;
+import com.woo.jdbcx.JdbcxPagingDaoSupportImpl;
+import com.woo.jdbcx.modal.Member;
 import com.woo.jdbcx.sql.loader.SqlLoader;
 
 import freemarker.core.ParseException;
@@ -47,6 +51,9 @@ public class SqlLoaderTest {
 	@Autowired
 	SqlLoader sqlLoader;
 
+	@Autowired
+	JdbcxPagingDaoSupportImpl jdbcx;
+
 	@Test
 	public void loadSqlTest() throws TemplateNotFoundException, MalformedTemplateNameException, ParseException,
 			IOException, TemplateException {
@@ -65,6 +72,17 @@ public class SqlLoaderTest {
 		context.put("id", "1");
 		String sql2 = sqlLoader.getSql("member.select.all.columns", context);
 		logger.info(sql2);
+	}
+
+	@Test
+	public void queryWithSqlLoaderTest() {
+		String sql = sqlLoader.getSql("member.query.createon.after");
+		logger.info("query sql is: {}", sql);
+
+		Map<String, Object> context = new HashMap<String, Object>();
+		context.put("createdOn", new Date());
+		List<Member> members = jdbcx.queryForListBean(sql, context, Member.class);
+		logger.info("result is : {}", members);
 	}
 
 }

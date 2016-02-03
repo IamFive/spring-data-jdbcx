@@ -26,7 +26,7 @@ CREATE TABLE "public"."member" (
 
 
 insert into member (name, regist_ip, created_on, updated_on, is_admin, profile) VALUES 
-('woo', '127.0.0.1', '2016-01-15 10:34:23', '2016-01-15 10:34:25', 't', '{"age":15}');
+('woo', '127.0.0.1', '2016-01-15 10:34:23', '2016-01-15 10:34:25.999', 't', '{"age":15}');
 
 insert into member (name, regist_ip, created_on, updated_on, is_admin, profile) VALUES
-('Five', '192.168.1.120', '2016-01-15 10:34:23', '2016-01-15 10:34:25', 'f', '{"age":15}');
+('Five', '192.168.1.120', '2016-02-15 10:34:23', '2016-02-15 10:34:23.999', 'f', '{"age":15}');

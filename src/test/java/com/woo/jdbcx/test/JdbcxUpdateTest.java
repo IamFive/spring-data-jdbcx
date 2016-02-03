@@ -41,7 +41,7 @@ import com.woo.jdbcx.modal.Member;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
-public class JdbcxTemplateUpdateTest {
+public class JdbcxUpdateTest {
 
 
 	@Autowired

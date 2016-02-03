@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Templates>
+	<Template>
+		<name>member.select.all.columns</name>
+		<template><![CDATA[
+				select * from member 
+				where 
+					1 = 1 <#if id??>and id = :id</#if>
+			]]></template>
+	</Template>
+
+	<Template>
+		<name>member.query.createon.after</name>
+		<template><![CDATA[
+				select * from member 
+				where 
+					created_on >= :createdOn
+			]]></template>
+	</Template>
+	
+	
+	<Template>
+		<name>member.insert.new</name>
+		<template><![CDATA[
+			insert into member (name, regist_ip, created_on, updated_on, is_admin) VALUES 
+			(:name, :registIp, :createdOn, :updatedOn, :isAdmin)
+			]]></template>
+	</Template>
+	
+</Templates>

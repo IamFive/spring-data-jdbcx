@@ -39,6 +39,7 @@ import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import com.woo.jdbcx.dialect.Databases;
@@ -217,6 +218,13 @@ public abstract class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 
 	// ============================ single field returned =====================//
 
+	/**
+	 * execute SQL (insert/update/etc)
+	 * 
+	 * @param sql
+	 * @param beanParamSource
+	 * @return
+	 */
 	public int update(String sql, Object beanParamSource) {
 		return getNamedParameterJdbcTemplate().update(sql, new BeanPropertySqlParameterSource(beanParamSource));
 	}
@@ -225,15 +233,18 @@ public abstract class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 		return getNamedParameterJdbcTemplate().update(sql, paramMap);
 	}
 
-	public int update(String sql, Object beanParamSource, KeyHolder generatedKeyHolder) {
-		return getNamedParameterJdbcTemplate().update(sql, new BeanPropertySqlParameterSource(beanParamSource),
-				generatedKeyHolder);
+	public KeyHolder insert(String sql, Object beanParamSource) {
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		getNamedParameterJdbcTemplate().update(sql, new BeanPropertySqlParameterSource(beanParamSource), keyHolder);
+		return keyHolder;
 	}
 
-	public int update(String sql, Object beanParamSource, KeyHolder generatedKeyHolder, String[] keyColumnNames)
+	public KeyHolder insert(String sql, Object beanParamSource, KeyHolder generatedKeyHolder, String[] keyColumnNames)
 			throws DataAccessException {
-		return getNamedParameterJdbcTemplate().update(sql, new BeanPropertySqlParameterSource(beanParamSource),
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		getNamedParameterJdbcTemplate().update(sql, new BeanPropertySqlParameterSource(beanParamSource),
 				generatedKeyHolder, keyColumnNames);
+		return keyHolder;
 	}
 
 	public final int[] batchUpdate(String sql, @SuppressWarnings("unchecked") Map<String, ?>... batchValues) {

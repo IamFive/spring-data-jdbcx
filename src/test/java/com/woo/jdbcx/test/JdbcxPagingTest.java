@@ -49,9 +49,9 @@ import com.woo.jdbcx.modal.Member;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
-public class JdbcxTemplatePagingTest {
+public class JdbcxPagingTest {
 	
-	private static final Logger logger = LoggerFactory.getLogger(JdbcxTemplatePagingTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(JdbcxPagingTest.class);
 
 	@Autowired
 	JdbcxPagingDaoSupportImpl jdbc;
