@@ -10,7 +10,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.woo</groupId>
 	<artifactId>spring-data-jdbcx</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 
 	<properties>
 		<spring-boot.version>1.2.7.RELEASE</spring-boot.version>
