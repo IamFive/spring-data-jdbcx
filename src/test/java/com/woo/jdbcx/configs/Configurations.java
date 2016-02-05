@@ -83,7 +83,7 @@ public class Configurations {
 	}
 
 	@org.springframework.context.annotation.Configuration
-	public static class FreeMarkerConfiguration {
+	public static class SqlLoaderConfiguration {
 
 		@Resource(name = "sql-template-loader")
 		protected TemplateLoader sqlTemplateLoader;
@@ -110,5 +110,6 @@ public class Configurations {
 			return cs;
 		}
 	}
+
 
 }

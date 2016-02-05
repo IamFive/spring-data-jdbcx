@@ -55,7 +55,7 @@ public class SqlLoader {
 
 	private Logger logger = LoggerFactory.getLogger(SqlLoader.class);
 
-	@Autowired
+	@Autowired(required = true)
 	private Configuration configuration;
 
 	public void setConfiguration(Configuration configuration) {
