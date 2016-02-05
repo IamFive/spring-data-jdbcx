@@ -47,8 +47,6 @@ public class JdbcxUpdateTest {
 	@Autowired
 	JdbcxPagingDaoSupportImpl jdbc;
 
-
-
 	@Test
 	public void testUpdate() {
 		Member m = new Member();
