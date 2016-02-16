@@ -60,7 +60,7 @@ public class SqlLoader {
 
 	private Logger logger = LoggerFactory.getLogger(SqlLoader.class);
 
-	String templatePath;
+	String[] templatePath;
 	String templateEncoding = "UTF-8";
 	Long updateDelay = 5000L;
 
@@ -68,10 +68,17 @@ public class SqlLoader {
 
 	@PostConstruct
 	public void initConfiguration() throws IOException {
+		if (templatePath == null || templatePath.length == 0) {
+			throw new RuntimeException("no sql template path has been set");
+		}
+
+		// build template loader
 		SqlTemplateLoaderFactory sqlTemplateFactory = new SqlTemplateLoaderFactory();
-		sqlTemplateFactory.setLocations(new String[] { templatePath });
+		sqlTemplateFactory.setLocations(templatePath);
 		SqlTemplateLoader sqlTemplateLoader = sqlTemplateFactory.createSqlTemplateLoader();
-		Configuration configuration = new Configuration(Configuration.VERSION_2_3_23);
+
+		// build configuration
+		Configuration configuration = new Configuration(Configuration.getVersion());
 		configuration.setTemplateLoader(sqlTemplateLoader);
 		configuration.setTemplateUpdateDelayMilliseconds(updateDelay);
 		configuration.setDefaultEncoding(templateEncoding);
@@ -147,25 +154,17 @@ public class SqlLoader {
 	}
 
 
-	/**
-	 * @param templatePath the templatePath to set
-	 */
-	public void setTemplatePath(String templatePath) {
-		this.templatePath = templatePath;
-	}
 
-	/**
-	 * @param templateEncoding the templateEncoding to set
-	 */
 	public void setTemplateEncoding(String templateEncoding) {
 		this.templateEncoding = templateEncoding;
 	}
 
-	/**
-	 * @param updateDelay the updateDelay to set
-	 */
 	public void setUpdateDelay(Long updateDelay) {
 		this.updateDelay = updateDelay;
+	}
+
+	public void setTemplatePath(String[] templatePath) {
+		this.templatePath = templatePath;
 	}
 
 }
