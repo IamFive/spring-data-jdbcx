@@ -39,7 +39,7 @@ import org.springframework.data.domain.Sort.Order;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.woo.jdbcx.Application;
-import com.woo.jdbcx.JdbcxPagingDaoSupportImpl;
+import com.woo.jdbcx.JdbcxPagingDaoSupport;
 import com.woo.jdbcx.modal.Member;
 
 /**
@@ -54,7 +54,7 @@ public class JdbcxPagingTest {
 	private static final Logger logger = LoggerFactory.getLogger(JdbcxPagingTest.class);
 
 	@Autowired
-	JdbcxPagingDaoSupportImpl jdbc;
+	JdbcxPagingDaoSupport jdbc;
 
 	@Before
 	public void init() {

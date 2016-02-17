@@ -17,20 +17,18 @@
 
 package com.woo.jdbcx.test;
 
-import java.util.Date;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.woo.jdbcx.Application;
-import com.woo.jdbcx.JdbcxPagingDaoSupport;
+import com.woo.jdbcx.JdbcxService.FieldValue;
 import com.woo.jdbcx.modal.Member;
-import com.woo.jdbcx.sql.loader.SqlLoader;
+import com.woo.jdbcx.service.MemberService;
+
 
 /**
  * @author Woo Cupid
@@ -39,31 +37,29 @@ import com.woo.jdbcx.sql.loader.SqlLoader;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
-public class JdbcxInsertTest {
+public class JdbcxServiceTest {
 
 
 	@Autowired
-	JdbcxPagingDaoSupport jdbc;
-
-	@Autowired
-	SqlLoader sqlLoader;
-
-
+	MemberService memberService;
 
 	@Test
-	public void insertAndReturnKeyTest() {
-		Member m = new Member();
-		m.setName("hahaha");
-		m.setRegistIp("192.168.1.12");
-		m.setIsAdmin(true);
-		m.setCreatedOn(new Date());
-		m.setUpdatedOn(new Date());
-
-		String sql = sqlLoader.getSql("member.insert.new");
-		KeyHolder keyHolder = jdbc.insert(sql, m);
-		
-		Member member = jdbc.queryForBean("select * from member where name = 'hahaha'", Member.class);
-		Assert.assertEquals(keyHolder.getKey().intValue(), member.getId().intValue());
+	public void testGetById() {
+		Member member = memberService.get(1);
+		Assert.assertEquals(member.getName(), "woo");
 	}
+
+	@Test
+	public void testDelById() {
+		int count = memberService.delete(2);
+		Assert.assertEquals(count, 1);
+	}
+
+	@Test
+	public void testFindByField() {
+		Member member = memberService.findByFields(FieldValue.of("id", 1), FieldValue.of("regist_ip", "127.0.0.1"));
+		Assert.assertEquals(member.getName(), "woo");
+	}
+
 
 }

@@ -18,8 +18,9 @@
 package com.woo.jdbcx.modal;
 
 import java.util.Date;
+import java.util.Map;
 
-public class Member {
+public class MemberForPostgres {
 
 	private Integer id;
 
@@ -35,8 +36,8 @@ public class Member {
 
 
 	//	private List<Integer> profile;
-	//	private Map<String, Object> profile;
-	private String profile;
+	private Map<String, Object> profile;
+	//	private String profile;
 
 	/**
 	 * @return id
@@ -123,18 +124,17 @@ public class Member {
 	}
 
 
-
 	/**
 	 * @return the profile
 	 */
-	public String getProfile() {
+	public Map<String, Object> getProfile() {
 		return profile;
 	}
 
 	/**
 	 * @param profile the profile to set
 	 */
-	public void setProfile(String profile) {
+	public void setProfile(Map<String, Object> profile) {
 		this.profile = profile;
 	}
 

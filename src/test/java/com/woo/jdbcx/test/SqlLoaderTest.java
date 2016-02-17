@@ -21,7 +21,7 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.woo.jdbcx.Application;
-import com.woo.jdbcx.JdbcxPagingDaoSupportImpl;
+import com.woo.jdbcx.JdbcxPagingDaoSupport;
 import com.woo.jdbcx.modal.Member;
 import com.woo.jdbcx.sql.loader.SqlLoader;
 
@@ -40,7 +40,7 @@ public class SqlLoaderTest {
 	SqlLoader sqlLoader;
 
 	@Autowired
-	JdbcxPagingDaoSupportImpl jdbcx;
+	JdbcxPagingDaoSupport jdbcx;
 
 	@Test
 	public void loadSql2Test() {

@@ -16,12 +16,14 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Woo Cupid
  * @date 2016年1月28日
  * @version $Revision$
  */
+@Component
 public class JdbcxPagingDaoSupport extends JdbcxDaoSupport {
 
 	public <T> Page<T> queryForListBean(String sql, Map<String, ?> paramMap, Class<T> mapResultToClass,

@@ -31,7 +31,7 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.woo.jdbcx.Application;
-import com.woo.jdbcx.JdbcxPagingDaoSupportImpl;
+import com.woo.jdbcx.JdbcxPagingDaoSupport;
 import com.woo.jdbcx.modal.Member;
 
 /**
@@ -45,7 +45,7 @@ public class JdbcxUpdateTest {
 
 
 	@Autowired
-	JdbcxPagingDaoSupportImpl jdbc;
+	JdbcxPagingDaoSupport jdbc;
 
 	@Test
 	public void testUpdate() {
