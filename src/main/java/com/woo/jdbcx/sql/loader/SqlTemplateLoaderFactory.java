@@ -97,7 +97,6 @@ public class SqlTemplateLoaderFactory implements FactoryBean<SqlTemplateLoader>,
 		if (r.exists()) {
 			List<SqlTemplate> templates = new ArrayList<SqlTemplate>();
 			try {
-				logger.info("load template from : {}", r.getFile().getAbsolutePath());
 				templates = parseTemplate(r.getFile());
 			} catch (Exception e) {
 				InputStream is = r.getInputStream();
@@ -141,6 +140,7 @@ public class SqlTemplateLoaderFactory implements FactoryBean<SqlTemplateLoader>,
 				result.add(sqlTemplate);
 			}
 		} else if (file.isDirectory()) {
+			logger.info("load template from folder : {}", file.getAbsolutePath());
 			File[] files = file.listFiles();
 			for (File f : files) {
 				result.addAll(parseTemplate(f));

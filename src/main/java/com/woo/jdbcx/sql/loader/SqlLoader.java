@@ -3,10 +3,14 @@ package com.woo.jdbcx.sql.loader;
 import java.io.IOException;
 import java.io.StringWriter;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+
+import com.woo.jdbcx.sql.loader.SqlTemplateLoaderFactory.SqlTemplateLoader;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -51,16 +55,36 @@ import freemarker.template.TemplateException;
  * @version $Revision$
  */
 @Component
+@ConfigurationProperties(prefix = "spring.jdbcx.sql")
 public class SqlLoader {
 
 	private Logger logger = LoggerFactory.getLogger(SqlLoader.class);
 
-	@Autowired(required = true)
+	String[] templatePath;
+	String templateEncoding = "UTF-8";
+	Long updateDelay = 5000L;
+
 	private Configuration configuration;
 
-	public void setConfiguration(Configuration configuration) {
+	@PostConstruct
+	public void initConfiguration() throws IOException {
+		if (templatePath == null || templatePath.length == 0) {
+			throw new RuntimeException("no sql template path has been set");
+		}
+
+		// build template loader
+		SqlTemplateLoaderFactory sqlTemplateFactory = new SqlTemplateLoaderFactory();
+		sqlTemplateFactory.setLocations(templatePath);
+		SqlTemplateLoader sqlTemplateLoader = sqlTemplateFactory.createSqlTemplateLoader();
+
+		// build configuration
+		Configuration configuration = new Configuration(Configuration.getVersion());
+		configuration.setTemplateLoader(sqlTemplateLoader);
+		configuration.setTemplateUpdateDelayMilliseconds(updateDelay);
+		configuration.setDefaultEncoding(templateEncoding);
 		this.configuration = configuration;
 	}
+
 
 	private Template getTemplate(String name) {
 		try {
@@ -129,5 +153,18 @@ public class SqlLoader {
 		}
 	}
 
+
+
+	public void setTemplateEncoding(String templateEncoding) {
+		this.templateEncoding = templateEncoding;
+	}
+
+	public void setUpdateDelay(Long updateDelay) {
+		this.updateDelay = updateDelay;
+	}
+
+	public void setTemplatePath(String[] templatePath) {
+		this.templatePath = templatePath;
+	}
 
 }

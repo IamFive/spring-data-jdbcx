@@ -284,7 +284,8 @@ public class JsonMapper {
 				JavaType typeRef = TypeFactory.defaultInstance().constructParametricType(List.class, Map.class);
 				m.readValue(json, typeRef);
 			} else {
-				JavaType typeRef = TypeFactory.defaultInstance().constructMapType(HashMap.class, String.class, Object.class);
+				JavaType typeRef = TypeFactory.defaultInstance().constructMapType(HashMap.class, String.class,
+						Object.class);
 				m.readValue(json, typeRef);
 				m.readValue(json, typeRef);
 			}

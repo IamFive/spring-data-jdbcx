@@ -7,8 +7,6 @@
  */
 package com.woo.jdbcx.test;
 
-import java.io.IOException;
-import java.io.StringWriter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -23,16 +21,9 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.woo.jdbcx.Application;
-import com.woo.jdbcx.JdbcxPagingDaoSupportImpl;
+import com.woo.jdbcx.JdbcxPagingDaoSupport;
 import com.woo.jdbcx.modal.Member;
 import com.woo.jdbcx.sql.loader.SqlLoader;
-
-import freemarker.core.ParseException;
-import freemarker.template.Configuration;
-import freemarker.template.MalformedTemplateNameException;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
-import freemarker.template.TemplateNotFoundException;
 
 /**
  * @author Woo Cupid
@@ -46,22 +37,10 @@ public class SqlLoaderTest {
 	private static final Logger logger = LoggerFactory.getLogger(SqlLoaderTest.class);
 
 	@Autowired
-	Configuration cfg;
-
-	@Autowired
 	SqlLoader sqlLoader;
 
 	@Autowired
-	JdbcxPagingDaoSupportImpl jdbcx;
-
-	@Test
-	public void loadSqlTest() throws TemplateNotFoundException, MalformedTemplateNameException, ParseException,
-			IOException, TemplateException {
-		Template template = cfg.getTemplate("member.select.all.columns");
-		StringWriter sw = new StringWriter();
-		template.process(new Object(), sw);
-		logger.info("{}", sw);
-	}
+	JdbcxPagingDaoSupport jdbcx;
 
 	@Test
 	public void loadSql2Test() {

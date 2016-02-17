@@ -15,7 +15,7 @@
  * limitations under the License.
  *******************************************************************************/
 
-package com.woo.jdbcx;
+package com.woo.jdbcx.log4jdbc;
 
 import java.sql.SQLFeatureNotSupportedException;
 import java.util.HashSet;

@@ -41,6 +41,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Component;
 
 import com.woo.jdbcx.dialect.Databases;
 import com.woo.jdbcx.dialect.SQLDialect;
@@ -52,7 +53,8 @@ import com.woo.jdbcx.dialect.SQLDialect;
  * @date 2016年1月21日
  * @version $Revision$
  */
-public abstract class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
+@Component
+public class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 
 	private static final Logger logger = LoggerFactory.getLogger(JdbcxDaoSupport.class);
 
