@@ -99,6 +99,17 @@ public class JdbcxService<Entity, PK extends Serializable> {
 		return DAO.queryForListBean(sb.toString(), param, entityClazz);
 	}
 
+	public Integer countByFields(FieldValue... fvs) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		StringBuffer sb = new StringBuffer("select count(*) from ").append(tableName).append(" where 1=1 ");
+		for (FieldValue fv : fvs) {
+			sb.append(" and ").append(fv.getFieldName()).append(" = :").append(fv.getFieldName());
+			param.put(fv.getFieldName(), fv.getFieldValue());
+		}
+		return DAO.queryForObject(sb.toString(), param, Integer.class);
+	}
+
+
 	public int delete(PK id) {
 		Map<String, PK> paramMap = new HashMap<String, PK>();
 		paramMap.put("id", id);
@@ -171,7 +182,7 @@ public class JdbcxService<Entity, PK extends Serializable> {
 			idColumnName = "id";
 		}
 
-		logger.info("[{}] guess table meta, table-name {}, id-column-name {}", entityClazz, tableName,
+		logger.info("[{}] detected table meta: table-name {}, id-column-name {}", entityClazz, tableName,
 				idColumnName);
 	}
 

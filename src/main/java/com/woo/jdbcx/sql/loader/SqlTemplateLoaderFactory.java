@@ -1,8 +1,10 @@
 package com.woo.jdbcx.sql.loader;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -60,12 +62,18 @@ spring xml configuration sample:
  */
 public class SqlTemplateLoaderFactory implements FactoryBean<SqlTemplateLoader>, InitializingBean {
 
+	/**
+	 * 
+	 */
+	private static final String SQL_TEMPLATE_SYNC_FOLDER = ".sql.template.sync";
+
 	private static Logger logger = LoggerFactory.getLogger(SqlTemplateLoaderFactory.class);
 
 	private ResourceLoader resourceLoader = new DefaultResourceLoader();
 
 	private String[] locations;
 	private SqlTemplateLoader sqlTemplateLoader = new SqlTemplateLoader();
+	private static String syncSqlTplFolder;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -77,6 +85,12 @@ public class SqlTemplateLoaderFactory implements FactoryBean<SqlTemplateLoader>,
 	 * @throws IOException
 	 */
 	public SqlTemplateLoader createSqlTemplateLoader() throws IOException {
+
+		// create sync sql folder
+		syncSqlTplFolder = MessageFormat.format("{0}{1}{2}",
+				resourceLoader.getResource("/").getFile().getAbsolutePath(), File.separator, SQL_TEMPLATE_SYNC_FOLDER);
+		new File(syncSqlTplFolder).mkdirs();
+
 		for (String path : locations) {
 			loadTemplates(path);
 		}
@@ -99,8 +113,18 @@ public class SqlTemplateLoaderFactory implements FactoryBean<SqlTemplateLoader>,
 			try {
 				templates = parseTemplate(r.getFile());
 			} catch (Exception e) {
-				InputStream is = r.getInputStream();
-				templates = parseTemplate(is);
+				if (path.endsWith(".xml")) {
+					// ignore all not file path
+					int idx = path.contains("/") ? path.lastIndexOf("/") : path.indexOf(":");
+					String filename = path.substring(idx + 1);
+					String syncToFileName = syncSqlTplFolder + File.separator + filename;
+					logger.info("It seems {} is not a disk file, sync to {}", syncToFileName);
+					InputStream is = r.getInputStream();
+					IOUtils.copy(is, new FileOutputStream(new File(syncToFileName)));
+					IOUtils.closeQuietly(is);
+
+					templates = parseTemplate(new File(syncToFileName));
+				}
 			}
 
 			for (SqlTemplate xmlTemplate : templates) {
@@ -119,6 +143,7 @@ public class SqlTemplateLoaderFactory implements FactoryBean<SqlTemplateLoader>,
 	 */
 	public static List<SqlTemplate> parseTemplate(InputStream is) throws IOException {
 		String content = IOUtils.toString(is);
+		logger.info("It seems the sql template is in JAR file, copy it to {}", syncSqlTplFolder);
 		List<SqlTemplate> list = new ArrayList<SqlTemplate>();
 		SqlTemplates templates = SqlTemplateParser.fromXML(content);
 		for (SqlTemplate sqlTemplate : templates.getTemplates()) {

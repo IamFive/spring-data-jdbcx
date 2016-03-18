@@ -61,5 +61,12 @@ public class JdbcxServiceTest {
 		Assert.assertEquals(member.getName(), "woo");
 	}
 
+	@Test
+	public void testCountByField() {
+		Integer count = memberService.countByFields(FieldValue.of("id", 1), FieldValue.of("regist_ip", "127.0.0.1"));
+		Assert.assertEquals(count.intValue(), 1);
 
+		Integer count2 = memberService.countByFields(FieldValue.of("id", 0), FieldValue.of("regist_ip", "127.0.0.1"));
+		Assert.assertEquals(count2.intValue(), 0);
+	}
 }
