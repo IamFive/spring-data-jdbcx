@@ -182,7 +182,7 @@ public class JdbcxService<Entity, PK extends Serializable> {
 			idColumnName = "id";
 		}
 
-		logger.info("[{}] guess table meta, table-name {}, id-column-name {}", entityClazz, tableName,
+		logger.info("[{}] detected table meta: table-name {}, id-column-name {}", entityClazz, tableName,
 				idColumnName);
 	}
 

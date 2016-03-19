@@ -70,8 +70,9 @@ public class PGObjectConverter implements ConditionalGenericConverter {
 						Object bean = JsonMapper.nonEmptyMapper().getBean(value, resolvableType.getRawClass());
 						return bean;
 					}
-				} else if ("array".equals(type)) {
+				} else {
 					//TODO
+					throw new RuntimeException("postgres " + type + " convertor is not implemented");
 				}
 			}
 		}
