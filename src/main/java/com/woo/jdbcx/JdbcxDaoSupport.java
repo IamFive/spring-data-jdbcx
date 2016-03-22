@@ -241,11 +241,11 @@ public class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 		return keyHolder;
 	}
 
-	public KeyHolder insert(String sql, Object beanParamSource, KeyHolder generatedKeyHolder, String[] keyColumnNames)
+	public KeyHolder insert(String sql, Object beanParamSource, String... keyColumnNames)
 			throws DataAccessException {
 		KeyHolder keyHolder = new GeneratedKeyHolder();
-		getNamedParameterJdbcTemplate().update(sql, new BeanPropertySqlParameterSource(beanParamSource),
-				generatedKeyHolder, keyColumnNames);
+		getNamedParameterJdbcTemplate().update(sql, new BeanPropertySqlParameterSource(beanParamSource), keyHolder,
+				keyColumnNames);
 		return keyHolder;
 	}
 

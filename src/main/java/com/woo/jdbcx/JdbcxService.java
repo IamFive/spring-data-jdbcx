@@ -83,7 +83,8 @@ public class JdbcxService<Entity, PK extends Serializable> {
 		Map<String, Object> param = new HashMap<String, Object>();
 		StringBuffer sb = new StringBuffer("select * from ").append(tableName).append(" where 1=1 ");
 		for (FieldValue fv : fvs) {
-			sb.append(" and ").append(fv.getFieldName()).append(" = :").append(fv.getFieldName());
+			String dbFieldName = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, fv.getFieldName());
+			sb.append(" and ").append(dbFieldName).append(" = :").append(fv.getFieldName());
 			param.put(fv.getFieldName(), fv.getFieldValue());
 		}
 		return DAO.queryForBean(sb.toString(), param, entityClazz);
@@ -93,7 +94,8 @@ public class JdbcxService<Entity, PK extends Serializable> {
 		Map<String, Object> param = new HashMap<String, Object>();
 		StringBuffer sb = new StringBuffer("select * from ").append(tableName).append(" where 1=1 ");
 		for (FieldValue fv : fvs) {
-			sb.append("and ").append(fv.getFieldName()).append(" = :").append(fv.getFieldName());
+			String dbFieldName = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, fv.getFieldName());
+			sb.append("and ").append(dbFieldName).append(" = :").append(fv.getFieldName());
 			param.put(fv.getFieldName(), fv.getFieldValue());
 		}
 		return DAO.queryForListBean(sb.toString(), param, entityClazz);
@@ -103,7 +105,8 @@ public class JdbcxService<Entity, PK extends Serializable> {
 		Map<String, Object> param = new HashMap<String, Object>();
 		StringBuffer sb = new StringBuffer("select count(*) from ").append(tableName).append(" where 1=1 ");
 		for (FieldValue fv : fvs) {
-			sb.append(" and ").append(fv.getFieldName()).append(" = :").append(fv.getFieldName());
+			String dbFieldName = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, fv.getFieldName());
+			sb.append(" and ").append(dbFieldName).append(" = :").append(fv.getFieldName());
 			param.put(fv.getFieldName(), fv.getFieldValue());
 		}
 		return DAO.queryForObject(sb.toString(), param, Integer.class);

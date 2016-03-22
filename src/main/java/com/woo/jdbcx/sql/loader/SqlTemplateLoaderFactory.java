@@ -118,7 +118,7 @@ public class SqlTemplateLoaderFactory implements FactoryBean<SqlTemplateLoader>,
 					int idx = path.contains("/") ? path.lastIndexOf("/") : path.indexOf(":");
 					String filename = path.substring(idx + 1);
 					String syncToFileName = syncSqlTplFolder + File.separator + filename;
-					logger.info("It seems {} is not a disk file, sync to {}", syncToFileName);
+					logger.debug("It seems {} is not a disk file, sync to {}", syncToFileName);
 					InputStream is = r.getInputStream();
 					IOUtils.copy(is, new FileOutputStream(new File(syncToFileName)));
 					IOUtils.closeQuietly(is);
@@ -143,7 +143,7 @@ public class SqlTemplateLoaderFactory implements FactoryBean<SqlTemplateLoader>,
 	 */
 	public static List<SqlTemplate> parseTemplate(InputStream is) throws IOException {
 		String content = IOUtils.toString(is);
-		logger.info("It seems the sql template is in JAR file, copy it to {}", syncSqlTplFolder);
+		logger.debug("It seems the sql template is in JAR file, copy it to {}", syncSqlTplFolder);
 		List<SqlTemplate> list = new ArrayList<SqlTemplate>();
 		SqlTemplates templates = SqlTemplateParser.fromXML(content);
 		for (SqlTemplate sqlTemplate : templates.getTemplates()) {
@@ -157,7 +157,7 @@ public class SqlTemplateLoaderFactory implements FactoryBean<SqlTemplateLoader>,
 	public static List<SqlTemplate> parseTemplate(File file) {
 		List<SqlTemplate> result = new ArrayList<SqlTemplate>();
 		if (file.isFile()) {
-			logger.info("load template from : {}", file.getAbsolutePath());
+			logger.debug("load template from : {}", file.getAbsolutePath());
 			SqlTemplates templates = SqlTemplateParser.fromXML(file);
 			for (SqlTemplate sqlTemplate : templates.getTemplates()) {
 				sqlTemplate.setLastModified(file.lastModified());
@@ -165,7 +165,7 @@ public class SqlTemplateLoaderFactory implements FactoryBean<SqlTemplateLoader>,
 				result.add(sqlTemplate);
 			}
 		} else if (file.isDirectory()) {
-			logger.info("load template from folder : {}", file.getAbsolutePath());
+			logger.debug("load template from folder : {}", file.getAbsolutePath());
 			File[] files = file.listFiles();
 			for (File f : files) {
 				result.addAll(parseTemplate(f));
