@@ -7,6 +7,7 @@
  */
 package com.woo.jdbcx.convertor;
 
+import java.lang.reflect.Array;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -16,6 +17,7 @@ import java.util.Set;
 import org.postgresql.jdbc4.Jdbc4Array;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.ResolvableType;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.ConditionalGenericConverter;
@@ -46,6 +48,7 @@ public class PGArrayConverter implements ConditionalGenericConverter {
 	public Set<ConvertiblePair> getConvertibleTypes() {
 		Set<ConvertiblePair> convertables = new HashSet<ConvertiblePair>();
 		convertables.add(new ConvertiblePair(Jdbc4Array.class, List.class));
+		convertables.add(new ConvertiblePair(Jdbc4Array.class, Object[].class));
 		return convertables;
 	}
 
@@ -60,15 +63,28 @@ public class PGArrayConverter implements ConditionalGenericConverter {
 		if (source != null) {
 			if (source instanceof Jdbc4Array) {
 				Jdbc4Array jdbc4Array = (Jdbc4Array) source;
-				if (jdbc4Array != null) {
-					try {
-						// Type type = targetType.getResolvableType().getGeneric(0).getType();
-						Object[] array = (Object[]) jdbc4Array.getArray();
+				try {
+					// Type type = targetType.getResolvableType().getGeneric(0).getType();
+					ResolvableType resolvableType = targetType.getResolvableType();
+					Object[] array = (Object[]) jdbc4Array.getArray();
+					if (resolvableType.getRawClass().isAssignableFrom(List.class)) {
 						List<Object> asList = Arrays.asList(array);
 						return asList;
-					} catch (SQLException e) {
-						logger.error("Could not convert jdbc4 array to List<?>", e);
+					} else {
+						Object target = Array.newInstance(targetType.getElementTypeDescriptor().getType(),
+								array.length);
+						for (int i = 0; i < array.length; i++) {
+							Object object = array[i];
+							// Object targetElement = this.conversionService.convert(object, sourceType,
+							// targetType.getElementTypeDescriptor());
+							Array.set(target, i, object);
+						}
+						return target;
+						// Object[] array = (Object[]) jdbc4Array.getArray();
+						// return array;
 					}
+				} catch (SQLException e) {
+					logger.error("Could not convert jdbc4 array to List<?>", e);
 				}
 			}
 		}
