@@ -249,6 +249,20 @@ public class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 		return keyHolder;
 	}
 
+	public KeyHolder insert(String sql, Map<String, ?> paramMap) {
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		getNamedParameterJdbcTemplate().update(sql, new MapSqlParameterSource(paramMap), keyHolder);
+		return keyHolder;
+	}
+
+	public KeyHolder insert(String sql, Map<String, ?> paramMap, String... keyColumnNames)
+			throws DataAccessException {
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		getNamedParameterJdbcTemplate().update(sql, new MapSqlParameterSource(paramMap), keyHolder,
+				keyColumnNames);
+		return keyHolder;
+	}
+
 	public final int[] batchUpdate(String sql, @SuppressWarnings("unchecked") Map<String, ?>... batchValues) {
 		SqlParameterSource[] batchArgs = new SqlParameterSource[batchValues.length];
 		int i = 0;
