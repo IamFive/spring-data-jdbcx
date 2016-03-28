@@ -24,5 +24,6 @@ public class PGConversionServiceFactoryBean extends ConversionServiceFactoryBean
 		GenericConversionService registry = (GenericConversionService) this.getObject();
 		registry.addConverter(new StringToDateConverter());
 		registry.addConverter((GenericConverter) new PGObjectConverter(this.getObject()));
+		registry.addConverter((GenericConverter) new PGArrayConverter(this.getObject()));
 	}
 }
