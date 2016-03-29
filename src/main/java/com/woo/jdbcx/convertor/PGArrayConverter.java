@@ -14,7 +14,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.postgresql.jdbc4.Jdbc4Array;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ResolvableType;
@@ -47,8 +46,8 @@ public class PGArrayConverter implements ConditionalGenericConverter {
 	@Override
 	public Set<ConvertiblePair> getConvertibleTypes() {
 		Set<ConvertiblePair> convertables = new HashSet<ConvertiblePair>();
-		convertables.add(new ConvertiblePair(Jdbc4Array.class, List.class));
-		convertables.add(new ConvertiblePair(Jdbc4Array.class, Object[].class));
+		convertables.add(new ConvertiblePair(java.sql.Array.class, List.class));
+		convertables.add(new ConvertiblePair(java.sql.Array.class, Object[].class));
 		return convertables;
 	}
 
@@ -61,8 +60,8 @@ public class PGArrayConverter implements ConditionalGenericConverter {
 	@Override
 	public Object convert(Object source, TypeDescriptor sourceType, TypeDescriptor targetType) {
 		if (source != null) {
-			if (source instanceof Jdbc4Array) {
-				Jdbc4Array jdbc4Array = (Jdbc4Array) source;
+			if (source instanceof java.sql.Array) {
+				java.sql.Array jdbc4Array = (java.sql.Array) source;
 				try {
 					// Type type = targetType.getResolvableType().getGeneric(0).getType();
 					ResolvableType resolvableType = targetType.getResolvableType();
@@ -75,13 +74,9 @@ public class PGArrayConverter implements ConditionalGenericConverter {
 								array.length);
 						for (int i = 0; i < array.length; i++) {
 							Object object = array[i];
-							// Object targetElement = this.conversionService.convert(object, sourceType,
-							// targetType.getElementTypeDescriptor());
 							Array.set(target, i, object);
 						}
 						return target;
-						// Object[] array = (Object[]) jdbc4Array.getArray();
-						// return array;
 					}
 				} catch (SQLException e) {
 					logger.error("Could not convert jdbc4 array to List<?>", e);
