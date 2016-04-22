@@ -10,6 +10,10 @@ import org.springframework.data.domain.Sort.Direction;
 
 public class PaginationHelper {
 
+	/**
+	 * 
+	 */
+	private static final int DEFAULT_PAGE_SIZE = 15;
 	public static final String PAGINATION_ATTRNAME_PAGE = "page";
 	public static final String PAGINATION_ATTRNAME_PAGESIZE = "pagesize";
 	public static final String PAGINATION_ATTRNAME_SORT = "sortby";
@@ -40,16 +44,19 @@ public class PaginationHelper {
 	}
 
 	public PageRequest getPagination(String sortby) {
+		return getPagination(DEFAULT_PAGE_SIZE, sortby);
+	}
 
+	public PageRequest getPagination(Integer pageSize, String sortby) {
 		String page = StringUtils.defaultString(context.getParameter(PAGINATION_ATTRNAME_PAGE), "1");
-		String pageSize = StringUtils.defaultString(context.getParameter(PAGINATION_ATTRNAME_PAGESIZE), "10");
-
+		String size = StringUtils.defaultString(context.getParameter(PAGINATION_ATTRNAME_PAGESIZE),
+				String.valueOf(pageSize));
 		PageRequest pageRequest = null;
 		Sort sort = buildSortBy(sortby);
 		if (sort != null) {
-			pageRequest = new PageRequest(Integer.parseInt(page) - 1, Integer.parseInt(pageSize), sort);
+			pageRequest = new PageRequest(Integer.parseInt(page) - 1, Integer.parseInt(size), sort);
 		} else {
-			pageRequest = new PageRequest(Integer.parseInt(page) - 1, Integer.parseInt(pageSize));
+			pageRequest = new PageRequest(Integer.parseInt(page) - 1, Integer.parseInt(size));
 		}
 
 		return pageRequest;
