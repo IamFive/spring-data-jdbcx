@@ -76,9 +76,13 @@ public class JdbcxService<Entity, PK extends Serializable> {
 	}
 
 	public Entity get(PK id) {
-		Map<String, PK> param = new HashMap<String, PK>();
-		param.put("id", id);
-		return DAO.queryForBean(getByIdSql, param, entityClazz);
+		try {
+			Map<String, PK> param = new HashMap<String, PK>();
+			param.put("id", id);
+			return DAO.queryForBean(getByIdSql, param, entityClazz);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	public Entity findByFields(FieldValue... fvs) {
