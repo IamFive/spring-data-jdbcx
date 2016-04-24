@@ -45,6 +45,7 @@ import org.springframework.stereotype.Component;
 
 import com.woo.jdbcx.dialect.Databases;
 import com.woo.jdbcx.dialect.SQLDialect;
+import com.woo.jdbcx.params.RichBeanPropertySqlParameterSource;
 
 /**
  * Extends Named-Query-JDBC-Template with more friendly API
@@ -228,7 +229,7 @@ public class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 	 * @return
 	 */
 	public int update(String sql, Object beanParamSource) {
-		return getNamedParameterJdbcTemplate().update(sql, new BeanPropertySqlParameterSource(beanParamSource));
+		return getNamedParameterJdbcTemplate().update(sql, new RichBeanPropertySqlParameterSource(beanParamSource));
 	}
 
 	public int update(String sql, Map<String, ?> paramMap) {
@@ -237,14 +238,13 @@ public class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 
 	public KeyHolder insert(String sql, Object beanParamSource) {
 		KeyHolder keyHolder = new GeneratedKeyHolder();
-		getNamedParameterJdbcTemplate().update(sql, new BeanPropertySqlParameterSource(beanParamSource), keyHolder);
+		getNamedParameterJdbcTemplate().update(sql, new RichBeanPropertySqlParameterSource(beanParamSource), keyHolder);
 		return keyHolder;
 	}
 
-	public KeyHolder insert(String sql, Object beanParamSource, String... keyColumnNames)
-			throws DataAccessException {
+	public KeyHolder insert(String sql, Object beanParamSource, String... keyColumnNames) throws DataAccessException {
 		KeyHolder keyHolder = new GeneratedKeyHolder();
-		getNamedParameterJdbcTemplate().update(sql, new BeanPropertySqlParameterSource(beanParamSource), keyHolder,
+		getNamedParameterJdbcTemplate().update(sql, new RichBeanPropertySqlParameterSource(beanParamSource), keyHolder,
 				keyColumnNames);
 		return keyHolder;
 	}
@@ -255,11 +255,9 @@ public class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 		return keyHolder;
 	}
 
-	public KeyHolder insert(String sql, Map<String, ?> paramMap, String... keyColumnNames)
-			throws DataAccessException {
+	public KeyHolder insert(String sql, Map<String, ?> paramMap, String... keyColumnNames) throws DataAccessException {
 		KeyHolder keyHolder = new GeneratedKeyHolder();
-		getNamedParameterJdbcTemplate().update(sql, new MapSqlParameterSource(paramMap), keyHolder,
-				keyColumnNames);
+		getNamedParameterJdbcTemplate().update(sql, new MapSqlParameterSource(paramMap), keyHolder, keyColumnNames);
 		return keyHolder;
 	}
 
@@ -276,7 +274,7 @@ public class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 	public final int[] batchUpdate(String sql, List<?> batchArgs) {
 		SqlParameterSource[] params = new SqlParameterSource[batchArgs.size()];
 		for (int i = 0; i < batchArgs.size(); i++) {
-			params[i] = new BeanPropertySqlParameterSource(batchArgs.get(i));
+			params[i] = new RichBeanPropertySqlParameterSource(batchArgs.get(i));
 		}
 		return getNamedParameterJdbcTemplate().batchUpdate(sql, params);
 	}
