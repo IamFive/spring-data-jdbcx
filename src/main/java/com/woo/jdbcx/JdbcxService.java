@@ -51,6 +51,7 @@ public class JdbcxService<Entity, PK extends Serializable> {
 	@Autowired
 	protected JdbcxPagingDaoSupport DAO;
 
+	String getAllSql;
 	String getByIdSql;
 	String deleteByIdSql;
 
@@ -71,6 +72,7 @@ public class JdbcxService<Entity, PK extends Serializable> {
 	}
 
 	private void generateSql() {
+		getAllSql = MessageFormat.format("select * from {0}", tableName);
 		getByIdSql = MessageFormat.format("select * from {0} where {1} = :id", tableName, idColumnName);
 		deleteByIdSql = MessageFormat.format("delete from {0} where {1} = :id", tableName, idColumnName);
 	}
@@ -83,6 +85,14 @@ public class JdbcxService<Entity, PK extends Serializable> {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	public Page<Entity> getAll(Pageable p) {
+		return DAO.queryForListBean(getAllSql, entityClazz, p);
+	}
+
+	public List<Entity> getAll() {
+		return DAO.queryForListBean(getAllSql, entityClazz);
 	}
 
 	public Entity findByFields(FieldValue... fvs) {
