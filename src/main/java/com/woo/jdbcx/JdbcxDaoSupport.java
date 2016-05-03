@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.sql.DataSource;
 
 import org.slf4j.Logger;
@@ -61,7 +62,8 @@ public class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 	HashMap<Class<?>, BeanPropertyRowMapper<?>> beanPropsRowMapperMapper = new HashMap<Class<?>, BeanPropertyRowMapper<?>>();
 
 	// used to convert some special jdbc value type to java object
-	@Autowired(required = false)
+	//	@Autowired(required = false)
+	@Resource(name = "jdbcxConverter")
 	ConversionService conversionService;
 
 	SQLDialect dialect;
