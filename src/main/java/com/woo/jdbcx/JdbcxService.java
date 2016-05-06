@@ -24,6 +24,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -49,6 +51,7 @@ public class JdbcxService<Entity, PK extends Serializable> {
 	@Autowired
 	protected JdbcxPagingDaoSupport DAO;
 
+	String getAllSql;
 	String getByIdSql;
 	String deleteByIdSql;
 
@@ -69,21 +72,35 @@ public class JdbcxService<Entity, PK extends Serializable> {
 	}
 
 	private void generateSql() {
+		getAllSql = MessageFormat.format("select * from {0}", tableName);
 		getByIdSql = MessageFormat.format("select * from {0} where {1} = :id", tableName, idColumnName);
 		deleteByIdSql = MessageFormat.format("delete from {0} where {1} = :id", tableName, idColumnName);
 	}
 
 	public Entity get(PK id) {
-		Map<String, PK> param = new HashMap<String, PK>();
-		param.put("id", id);
-		return DAO.queryForBean(getByIdSql, param, entityClazz);
+		try {
+			Map<String, PK> param = new HashMap<String, PK>();
+			param.put("id", id);
+			return DAO.queryForBean(getByIdSql, param, entityClazz);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public Page<Entity> getAll(Pageable p) {
+		return DAO.queryForListBean(getAllSql, entityClazz, p);
+	}
+
+	public List<Entity> getAll() {
+		return DAO.queryForListBean(getAllSql, entityClazz);
 	}
 
 	public Entity findByFields(FieldValue... fvs) {
 		Map<String, Object> param = new HashMap<String, Object>();
 		StringBuffer sb = new StringBuffer("select * from ").append(tableName).append(" where 1=1 ");
 		for (FieldValue fv : fvs) {
-			sb.append(" and ").append(fv.getFieldName()).append(" = :").append(fv.getFieldName());
+			String dbFieldName = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, fv.getFieldName());
+			sb.append(" and ").append(dbFieldName).append(" = :").append(fv.getFieldName());
 			param.put(fv.getFieldName(), fv.getFieldValue());
 		}
 		return DAO.queryForBean(sb.toString(), param, entityClazz);
@@ -93,22 +110,35 @@ public class JdbcxService<Entity, PK extends Serializable> {
 		Map<String, Object> param = new HashMap<String, Object>();
 		StringBuffer sb = new StringBuffer("select * from ").append(tableName).append(" where 1=1 ");
 		for (FieldValue fv : fvs) {
-			sb.append("and ").append(fv.getFieldName()).append(" = :").append(fv.getFieldName());
+			String dbFieldName = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, fv.getFieldName());
+			sb.append(" and ").append(dbFieldName).append(" = :").append(fv.getFieldName());
 			param.put(fv.getFieldName(), fv.getFieldValue());
 		}
 		return DAO.queryForListBean(sb.toString(), param, entityClazz);
+	}
+
+	public Page<Entity> findListByFields(List<FieldValue> fvs, Pageable p) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		StringBuffer sb = new StringBuffer("select * from ").append(tableName).append(" where 1=1 ");
+		for (FieldValue fv : fvs) {
+			String dbFieldName = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, fv.getFieldName());
+			sb.append(" and ").append(dbFieldName).append(" = :").append(fv.getFieldName());
+			param.put(fv.getFieldName(), fv.getFieldValue());
+		}
+
+		return DAO.queryForListBean(sb.toString(), param, entityClazz, p);
 	}
 
 	public Integer countByFields(FieldValue... fvs) {
 		Map<String, Object> param = new HashMap<String, Object>();
 		StringBuffer sb = new StringBuffer("select count(*) from ").append(tableName).append(" where 1=1 ");
 		for (FieldValue fv : fvs) {
-			sb.append(" and ").append(fv.getFieldName()).append(" = :").append(fv.getFieldName());
+			String dbFieldName = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, fv.getFieldName());
+			sb.append(" and ").append(dbFieldName).append(" = :").append(fv.getFieldName());
 			param.put(fv.getFieldName(), fv.getFieldValue());
 		}
 		return DAO.queryForObject(sb.toString(), param, Integer.class);
 	}
-
 
 	public int delete(PK id) {
 		Map<String, PK> paramMap = new HashMap<String, PK>();
@@ -116,7 +146,6 @@ public class JdbcxService<Entity, PK extends Serializable> {
 		int count = DAO.update(deleteByIdSql, paramMap);
 		return count;
 	}
-
 
 	private Class<?> getSuperClassGenricType(final Class<?> targetClass, final int index) {
 		Assert.notNull(targetClass, "targetClass不能为空");
@@ -182,8 +211,7 @@ public class JdbcxService<Entity, PK extends Serializable> {
 			idColumnName = "id";
 		}
 
-		logger.info("[{}] detected table meta: table-name {}, id-column-name {}", entityClazz, tableName,
-				idColumnName);
+		logger.info("[{}] detected table meta: table-name {}, id-column-name {}", entityClazz, tableName, idColumnName);
 	}
 
 	public static class FieldValue {
@@ -212,9 +240,9 @@ public class JdbcxService<Entity, PK extends Serializable> {
 	public static void main(String[] args) {
 		Class<?> clazz = String.class;
 
-		//		System.out.println(clazz.getEnclosingClass().getName());
+		// System.out.println(clazz.getEnclosingClass().getName());
 		System.out.println(clazz.getName());
-		//		System.out.println(clazz.getDeclaringClass().getName());
+		// System.out.println(clazz.getDeclaringClass().getName());
 	}
 
 }
