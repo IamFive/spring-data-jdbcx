@@ -29,11 +29,9 @@ import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.dao.DataAccessException;
-import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource;
@@ -63,7 +61,7 @@ public class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 	HashMap<Class<?>, BeanPropertyRowMapper<?>> beanPropsRowMapperMapper = new HashMap<Class<?>, BeanPropertyRowMapper<?>>();
 
 	// used to convert some special jdbc value type to java object
-	//	@Autowired(required = false)
+	// @Autowired(required = false)
 	@Resource(name = "jdbcxConverter")
 	ConversionService conversionService;
 
@@ -90,38 +88,6 @@ public class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 		} catch (SQLException e) {
 			logger.error("could not get datasource connection url", e);
 		}
-	}
-
-	public static class JdbcxBeanPropertyRowMapper<T> extends BeanPropertyRowMapper<T> {
-
-		private ConversionService cs;
-
-		public JdbcxBeanPropertyRowMapper() {
-			super();
-		}
-
-		public JdbcxBeanPropertyRowMapper(Class<T> mappedClass, boolean checkFullyPopulated) {
-			super(mappedClass, checkFullyPopulated);
-		}
-
-		public JdbcxBeanPropertyRowMapper(Class<T> mappedClass) {
-			super(mappedClass);
-		}
-
-		public JdbcxBeanPropertyRowMapper(Class<T> mappedClass, final ConversionService cs) {
-			super(mappedClass);
-			this.cs = cs;
-		}
-
-		@Override
-		protected void initBeanWrapper(BeanWrapper bw) {
-			super.initBeanWrapper(bw);
-			if (cs == null) {
-				cs = new DefaultFormattingConversionService(true);
-			}
-			bw.setConversionService(cs);
-		}
-
 	}
 
 	@SuppressWarnings("unchecked")

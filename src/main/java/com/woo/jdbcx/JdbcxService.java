@@ -30,6 +30,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import com.google.common.base.CaseFormat;
+import com.woo.qb.segment.SqlSegment;
 
 /**
  * 
@@ -93,6 +94,46 @@ public class JdbcxService<Entity, PK extends Serializable> {
 
 	public List<Entity> getAll() {
 		return DAO.queryForListBean(getAllSql, entityClazz);
+	}
+
+	public Entity findByNamedSqlSegment(SqlSegment segment) {
+		String condition = segment.asSql();
+		String sql = getAllSql + " where " + condition;
+		if (segment.isParamRequired()) {
+			return DAO.queryForBean(sql, segment.getKeyedParams(), entityClazz);
+		} else {
+			return DAO.queryForBean(sql, entityClazz);
+		}
+	}
+
+	public Entity findBySqlSegment(SqlSegment segment) {
+		String condition = segment.asSql();
+		String sql = getAllSql + " where " + condition;
+		if (segment.isParamRequired()) {
+			return DAO.queryForBean(sql, segment.getListParams(), entityClazz);
+		} else {
+			return DAO.queryForBean(sql, entityClazz);
+		}
+	}
+
+	public List<Entity> findListByNamedSqlSegment(SqlSegment segment) {
+		String condition = segment.asSql();
+		String sql = getAllSql + " where " + condition;
+		if (segment.isParamRequired()) {
+			return DAO.queryForListBean(sql, segment.getKeyedParams(), entityClazz);
+		} else {
+			return DAO.queryForListBean(sql, entityClazz);
+		}
+	}
+
+	public List<Entity> findListBySqlSegment(SqlSegment segment) {
+		String condition = segment.asSql();
+		String sql = getAllSql + " where " + condition;
+		if (segment.isParamRequired()) {
+			return DAO.queryForListBean(sql, segment.getListParams(), entityClazz);
+		} else {
+			return DAO.queryForListBean(sql, entityClazz);
+		}
 	}
 
 	public Entity findByFields(FieldValue... fvs) {
