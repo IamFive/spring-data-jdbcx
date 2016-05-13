@@ -42,13 +42,12 @@ public class JdbcxPagingDaoSupport extends JdbcxDaoSupport {
 
 	public <T> Page<T> queryForListBean(String sql, Object beanParamSource, Class<T> mapResultToClass,
 			Pageable pageable) {
-		BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(beanParamSource);
 		String countSql = dialect.getCountSql(sql);
-		Integer count = queryForObject(countSql, paramSource, Integer.class);
+		Integer count = queryForObject(countSql, new BeanPropertySqlParameterSource(beanParamSource), Integer.class);
 		if (count > pageable.getOffset()) {
 			String pageableSql = dialect.getPageableSql(sql, pageable);
-			List<T> list = getNamedParameterJdbcTemplate().query(pageableSql, paramSource,
-					getBeanPropsRowMapper(mapResultToClass));
+			List<T> list = getNamedParameterJdbcTemplate().query(pageableSql,
+					new BeanPropertySqlParameterSource(beanParamSource), getBeanPropsRowMapper(mapResultToClass));
 			return new PageImpl<T>(list, pageable, count);
 		} else {
 			return new PageImpl<T>(Collections.<T> emptyList(), pageable, count);
@@ -80,9 +79,8 @@ public class JdbcxPagingDaoSupport extends JdbcxDaoSupport {
 	}
 
 	public Page<Map<String, Object>> queryForListMap(String sql, Object beanParamSource, Pageable pageable) {
-		BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(beanParamSource);
 		String countSql = dialect.getCountSql(sql);
-		Integer count = queryForObject(countSql, paramSource, Integer.class);
+		Integer count = queryForObject(countSql, new BeanPropertySqlParameterSource(beanParamSource), Integer.class);
 		if (count > pageable.getOffset()) {
 			String pageableSql = dialect.getPageableSql(sql, pageable);
 			List<Map<String, Object>> list = getNamedParameterJdbcTemplate().queryForList(pageableSql,
@@ -107,9 +105,8 @@ public class JdbcxPagingDaoSupport extends JdbcxDaoSupport {
 	}
 
 	public <T> Page<T> queryForList(String sql, Object beanParamSource, Class<T> elementType, Pageable pageable) {
-		BeanPropertySqlParameterSource paramSource = new BeanPropertySqlParameterSource(beanParamSource);
 		String countSql = dialect.getCountSql(sql);
-		Integer count = queryForObject(countSql, paramSource, Integer.class);
+		Integer count = queryForObject(countSql, new BeanPropertySqlParameterSource(beanParamSource), Integer.class);
 		if (count > pageable.getOffset()) {
 			String pageableSql = dialect.getPageableSql(sql, pageable);
 			List<T> list = getNamedParameterJdbcTemplate().queryForList(pageableSql,
