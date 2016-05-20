@@ -29,6 +29,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * @author Woo Cupid
@@ -111,8 +112,8 @@ public class JdbcxBeanPropertyRowMapper<T> extends BeanPropertyRowMapper<T> {
 
 		for (int index = 1; index <= columnCount; index++) {
 			String column = JdbcUtils.lookupColumnName(rsmd, index);
-			String field = lowerCaseName(column.replaceAll(" ", ""));
-			PropertyDescriptor pd = mappedFields.get(field);
+			String field = column.replaceAll(" ", "");
+			PropertyDescriptor pd = mappedFields.get(lowerCaseName(field));
 			if (pd != null) {
 				try {
 					Object value = getColumnValue(rs, index, pd);
@@ -145,7 +146,8 @@ public class JdbcxBeanPropertyRowMapper<T> extends BeanPropertyRowMapper<T> {
 				// nest object property
 				Object value = JdbcUtils.getResultSetValue(rs, index);
 				try {
-					bw.setPropertyValue(field, value);
+					String camelCaseName = camelCaseName(field);
+					bw.setPropertyValue(camelCaseName, value);
 				} catch (TypeMismatchException ex) {
 					logger.debug("Could not set property for column " + column);
 				}
@@ -165,6 +167,18 @@ public class JdbcxBeanPropertyRowMapper<T> extends BeanPropertyRowMapper<T> {
 		}
 
 		return mappedObject;
+	}
+
+	protected String camelCaseName(String name) {
+		if (!StringUtils.hasLength(name)) {
+			return "";
+		}
+		StringBuilder result = new StringBuilder();
+		String[] splitted = name.split("_");
+		for (String split : splitted) {
+			result.append(StringUtils.capitalize(split));
+		}
+		return StringUtils.uncapitalize(result.toString());
 	}
 
 }
