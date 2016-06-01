@@ -152,8 +152,13 @@ public class JdbcxService<Entity, PK extends Serializable> {
 		StringBuffer sb = new StringBuffer("select * from ").append(tableName).append(" where 1=1 ");
 		for (FieldValue fv : fvs) {
 			String dbFieldName = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, fv.getFieldName());
-			sb.append(" and ").append(dbFieldName).append(" = :").append(fv.getFieldName());
-			param.put(fv.getFieldName(), fv.getFieldValue());
+			sb.append(" and ").append(dbFieldName);
+			if (fv.getFieldValue() == null) {
+				sb.append(" is null");
+			} else {
+				sb.append(" = :").append(fv.getFieldName());
+				param.put(fv.getFieldName(), fv.getFieldValue());
+			}
 		}
 		return DAO.queryForListBean(sb.toString(), param, entityClazz);
 	}
