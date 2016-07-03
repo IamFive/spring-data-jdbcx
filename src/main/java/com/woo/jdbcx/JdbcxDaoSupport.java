@@ -237,10 +237,15 @@ public class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 		return getNamedParameterJdbcTemplate().batchUpdate(sql, batchArgs);
 	}
 
+	@SuppressWarnings("unchecked")
 	public final int[] batchUpdate(String sql, List<?> batchArgs) {
 		SqlParameterSource[] params = new SqlParameterSource[batchArgs.size()];
 		for (int i = 0; i < batchArgs.size(); i++) {
-			params[i] = new RichBeanPropertySqlParameterSource(batchArgs.get(i));
+			if (batchArgs.get(i) instanceof Map) {
+				params[i] = new MapSqlParameterSource((Map<String, ?>) batchArgs.get(i));
+			} else {
+				params[i] = new RichBeanPropertySqlParameterSource(batchArgs.get(i));
+			}
 		}
 		return getNamedParameterJdbcTemplate().batchUpdate(sql, params);
 	}
