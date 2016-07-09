@@ -186,6 +186,28 @@ public class JdbcxService<Entity, PK extends Serializable> {
 		return DAO.queryForObject(sb.toString(), param, Integer.class);
 	}
 
+	public int updateFields(PK id, FieldValue... fvs) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("id", id);
+
+		StringBuffer sb = new StringBuffer("update ").append(tableName).append(" set ");
+		boolean addComma = false;
+		for (FieldValue fv : fvs) {
+			sb.append(addComma ? "," : "");
+			String dbFieldName = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, fv.getFieldName());
+			sb.append(dbFieldName);
+			if (fv.getFieldValue() == null) {
+				sb.append(" = null");
+			} else {
+				sb.append(" = :").append(fv.getFieldName());
+				param.put(fv.getFieldName(), fv.getFieldValue());
+			}
+			addComma = true;
+		}
+		sb.append(" where ").append(this.idColumnName).append(" = :id");
+		return DAO.update(sb.toString(), param);
+	}
+
 	public int delete(PK id) {
 		Map<String, PK> paramMap = new HashMap<String, PK>();
 		paramMap.put("id", id);
