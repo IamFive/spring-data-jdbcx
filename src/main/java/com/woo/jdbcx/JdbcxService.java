@@ -9,9 +9,11 @@ package com.woo.jdbcx;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,13 +21,18 @@ import java.util.Map;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.Transformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.util.ReflectionUtils;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -48,6 +55,7 @@ public class JdbcxService<Entity, PK extends Serializable> {
 	protected Class<Entity> entityClazz;
 	protected String tableName;
 	protected String idColumnName;
+	protected Field idField;
 
 	@Autowired
 	protected JdbcxPagingDaoSupport DAO;
@@ -55,6 +63,7 @@ public class JdbcxService<Entity, PK extends Serializable> {
 	String getAllSql;
 	String getByIdSql;
 	String deleteByIdSql;
+	String insertSql;
 
 	@SuppressWarnings("unchecked")
 	public JdbcxService() {
@@ -68,8 +77,13 @@ public class JdbcxService<Entity, PK extends Serializable> {
 
 	private void initial(Class<Entity> EntityClazz) {
 		this.entityClazz = EntityClazz;
-		guessTableMeta();
-		generateSql();
+		try {
+			guessTableMeta();
+			generateSql();
+		} catch (NoSuchFieldException | SecurityException e) {
+			logger.error("initial jdbcx service failed", e);
+			throw new RuntimeException(e);
+		}
 	}
 
 	private void generateSql() {
@@ -208,6 +222,12 @@ public class JdbcxService<Entity, PK extends Serializable> {
 		return DAO.update(sb.toString(), param);
 	}
 
+	public Entity insert(Entity entity) {
+		KeyHolder insert = DAO.insert(this.insertSql, entity, idColumnName);
+		ReflectionUtils.setField(idField, entity, insert.getKey());
+		return entity;
+	}
+
 	public int delete(PK id) {
 		Map<String, PK> paramMap = new HashMap<String, PK>();
 		paramMap.put("id", id);
@@ -241,7 +261,7 @@ public class JdbcxService<Entity, PK extends Serializable> {
 		return (Class<?>) params[index];
 	}
 
-	private void guessTableMeta() {
+	private void guessTableMeta() throws NoSuchFieldException, SecurityException {
 		// get table name if entity is annotated by @Table
 		Table table = AnnotationUtils.findAnnotation(entityClazz, Table.class);
 		if (table != null) {
@@ -259,6 +279,7 @@ public class JdbcxService<Entity, PK extends Serializable> {
 
 		// guess id column name
 		Field[] fields = entityClazz.getDeclaredFields();
+		List<String> fieldNames = new ArrayList<String>(fields.length);
 		for (Field field : fields) {
 			if (field.isAnnotationPresent(Id.class)) {
 				if (field.isAnnotationPresent(Column.class)) {
@@ -268,18 +289,43 @@ public class JdbcxService<Entity, PK extends Serializable> {
 					}
 				}
 				if (StringUtils.isEmpty(idColumnName)) {
-					idColumnName = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, field.getName());
+					idColumnName = upperCamelToUnderscore(field.getName());
 				}
-				break;
+				idField = field;
+			} else if (!field.isAnnotationPresent(Transient.class) && !Modifier.isFinal(field.getModifiers())) {
+				fieldNames.add(field.getName());
 			}
 		}
 
 		if (StringUtils.isEmpty(idColumnName)) {
 			logger.info("[{}] not @Id annotation is fould, will use *id* as id column name", entityClazz);
 			idColumnName = "id";
+			idField = entityClazz.getDeclaredField(idColumnName);
 		}
 
-		logger.info("[{}] detected table meta: table-name {}, id-column-name {}", entityClazz, tableName, idColumnName);
+		logger.info("[{}] detected table meta: table-name `{}`, id-column-name `{}`", entityClazz, tableName,
+				idColumnName);
+
+		// generate insert sql
+		String valueKeys = StringUtils.collectionToDelimitedString(fieldNames, ",", ":", "");
+		CollectionUtils.transform(fieldNames, new Transformer<String, String>() {
+			@Override
+			public String transform(String input) {
+				return upperCamelToUnderscore(input);
+			}
+		});
+		String insertKeys = StringUtils.collectionToDelimitedString(fieldNames, ",");
+		insertSql = String.format("insert into %s (%s) values (%s)", tableName, insertKeys, valueKeys);
+		logger.debug("[{}] generated insert sql is `{}`", entityClazz, insertSql);
+
+	}
+
+	/**
+	 * @param field
+	 * @return
+	 */
+	protected String upperCamelToUnderscore(String value) {
+		return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, value);
 	}
 
 	public static class FieldValue {
