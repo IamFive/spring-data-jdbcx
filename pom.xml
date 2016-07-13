@@ -10,10 +10,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.woo</groupId>
 	<artifactId>spring-data-jdbcx</artifactId>
-	<version>1.1.3</version>
+	<version>1.1.5</version>
 
 	<properties>
-		<spring-boot.version>1.2.7.RELEASE</spring-boot.version>
+		<spring-boot.version>1.3.4.RELEASE</spring-boot.version>
 		<commons-lang3.version>3.2.1</commons-lang3.version>
 		<assertj.version>2.2.0</assertj.version>
 		<jsqlparser.version>0.9.4</jsqlparser.version>
@@ -76,6 +76,13 @@
 			<artifactId>jsqlparser</artifactId>
 			<version>${jsqlparser.version}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.woo</groupId>
+			<artifactId>query-builder</artifactId>
+			<version>1.1.1</version>
+			<optional>true</optional>
+		</dependency>
 
 		<dependency>
 			<groupId>org.freemarker</groupId>
@@ -103,7 +110,6 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>9.4.1208.jre7</version>
 			<scope>compile</scope>
 		</dependency>
 
