@@ -10,7 +10,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.woo</groupId>
 	<artifactId>spring-data-jdbcx</artifactId>
-	<version>1.1.5</version>
+	<version>1.1.6</version>
 
 	<properties>
 		<spring-boot.version>1.3.4.RELEASE</spring-boot.version>
@@ -99,6 +99,11 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.3.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+			<version>4.0</version>
 		</dependency>
 
 		<dependency>
