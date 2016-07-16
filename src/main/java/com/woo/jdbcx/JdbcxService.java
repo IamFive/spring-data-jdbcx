@@ -328,6 +328,20 @@ public class JdbcxService<Entity, PK extends Serializable> {
 		return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, value);
 	}
 
+	@SuppressWarnings("unchecked")
+	public HashMap<PK, Entity> mapped(List<Entity> list) {
+		HashMap<PK, Entity> mapped = new HashMap<PK, Entity>(list.size());
+		for (Entity entity : list) {
+			try {
+				mapped.put((PK) idField.get(entity), entity);
+			} catch (Exception e) {
+				// ignore should not happen?
+				logger.warn("could not id field value for entity {}", entity.getClass());
+			}
+		}
+		return mapped;
+	}
+
 	public static class FieldValue {
 		private String fieldName;
 		private Object fieldValue;
@@ -353,7 +367,6 @@ public class JdbcxService<Entity, PK extends Serializable> {
 
 	public static void main(String[] args) {
 		Class<?> clazz = String.class;
-
 		// System.out.println(clazz.getEnclosingClass().getName());
 		System.out.println(clazz.getName());
 		// System.out.println(clazz.getDeclaringClass().getName());
