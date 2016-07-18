@@ -303,6 +303,7 @@ public class JdbcxService<Entity, PK extends Serializable> {
 			idField = entityClazz.getDeclaredField(idColumnName);
 		}
 
+		idField.setAccessible(true);
 		logger.info("[{}] detected table meta: table-name `{}`, id-column-name `{}`", entityClazz, tableName,
 				idColumnName);
 
@@ -336,7 +337,7 @@ public class JdbcxService<Entity, PK extends Serializable> {
 				mapped.put((PK) idField.get(entity), entity);
 			} catch (Exception e) {
 				// ignore should not happen?
-				logger.warn("could not id field value for entity {}", entity.getClass());
+				logger.warn("could not get id field value for entity {}", entity.getClass());
 			}
 		}
 		return mapped;
