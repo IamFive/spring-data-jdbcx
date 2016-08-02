@@ -307,6 +307,18 @@ public class JdbcxService<Entity, PK extends Serializable> {
 		logger.info("[{}] detected table meta: table-name `{}`, id-column-name `{}`", entityClazz, tableName,
 				idColumnName);
 
+		this.insertSql = generateInsertSql(fieldNames);
+		logger.debug("[{}] generated insert sql is `{}`", entityClazz, insertSql);
+
+		// TODO update sql ? i don't like this
+
+	}
+
+	/**
+	 * @param fieldNames
+	 * @return 
+	 */
+	protected String generateInsertSql(List<String> fieldNames) {
 		// generate insert sql
 		String valueKeys = StringUtils.collectionToDelimitedString(fieldNames, ",", ":", "");
 		CollectionUtils.transform(fieldNames, new Transformer<String, String>() {
@@ -316,9 +328,7 @@ public class JdbcxService<Entity, PK extends Serializable> {
 			}
 		});
 		String insertKeys = StringUtils.collectionToDelimitedString(fieldNames, ",");
-		insertSql = String.format("insert into %s (%s) values (%s)", tableName, insertKeys, valueKeys);
-		logger.debug("[{}] generated insert sql is `{}`", entityClazz, insertSql);
-
+		return String.format("insert into %s (%s) values (%s)", tableName, insertKeys, valueKeys);
 	}
 
 	/**
