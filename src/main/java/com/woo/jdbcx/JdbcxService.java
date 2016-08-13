@@ -62,6 +62,7 @@ public class JdbcxService<Entity, PK extends Serializable> {
 
 	String getAllSql;
 	String getByIdSql;
+	String listByIdSql;
 	String deleteByIdSql;
 	String insertSql;
 
@@ -89,6 +90,7 @@ public class JdbcxService<Entity, PK extends Serializable> {
 	private void generateSql() {
 		getAllSql = MessageFormat.format("select * from {0}", tableName);
 		getByIdSql = MessageFormat.format("select * from {0} where {1} = :id", tableName, idColumnName);
+		listByIdSql = MessageFormat.format("select * from {0} where {1} in (:id)", tableName, idColumnName);
 		deleteByIdSql = MessageFormat.format("delete from {0} where {1} = :id", tableName, idColumnName);
 	}
 
@@ -97,6 +99,16 @@ public class JdbcxService<Entity, PK extends Serializable> {
 			Map<String, PK> param = new HashMap<String, PK>();
 			param.put("id", id);
 			return DAO.queryForBean(getByIdSql, param, entityClazz);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public List<Entity> list(List<PK> list) {
+		try {
+			Map<String, Object> param = new HashMap<String, Object>();
+			param.put("id", list);
+			return DAO.queryForListBean(listByIdSql, param, entityClazz);
 		} catch (Exception e) {
 			return null;
 		}
