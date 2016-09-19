@@ -162,6 +162,11 @@ public class JdbcxService<Entity, PK extends Serializable> {
 		}
 	}
 
+	/**
+	 * TODO use limit 1 instead
+	 * @param fvs
+	 * @return
+	 */
 	public Entity findByFields(FieldValue... fvs) {
 		Map<String, Object> param = new HashMap<String, Object>();
 		StringBuffer sb = new StringBuffer("select * from ").append(tableName).append(" where 1=1 ");
