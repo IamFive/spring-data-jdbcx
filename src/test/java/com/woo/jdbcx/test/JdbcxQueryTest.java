@@ -23,12 +23,9 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.woo.jdbcx.Application;
+import com.woo.jdbcx.H2Env;
 import com.woo.jdbcx.JdbcxPagingDaoSupport;
 import com.woo.jdbcx.modal.Member;
 
@@ -37,9 +34,7 @@ import com.woo.jdbcx.modal.Member;
  * @date 2016年1月21日
  * @version $Revision$
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
-public class JdbcxQueryTest {
+public class JdbcxQueryTest extends H2Env {
 
 
 	@Autowired
