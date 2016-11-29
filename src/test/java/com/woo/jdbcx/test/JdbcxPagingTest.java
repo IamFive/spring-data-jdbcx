@@ -26,19 +26,16 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.woo.jdbcx.Application;
+import com.woo.jdbcx.H2Env;
 import com.woo.jdbcx.JdbcxPagingDaoSupport;
 import com.woo.jdbcx.modal.Member;
 
@@ -47,9 +44,7 @@ import com.woo.jdbcx.modal.Member;
  * @date 2016年1月21日
  * @version $Revision$
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
-public class JdbcxPagingTest {
+public class JdbcxPagingTest extends H2Env {
 	
 	private static final Logger logger = LoggerFactory.getLogger(JdbcxPagingTest.class);
 

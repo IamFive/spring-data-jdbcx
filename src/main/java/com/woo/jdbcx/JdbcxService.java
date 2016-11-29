@@ -25,6 +25,7 @@ import javax.persistence.Transient;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Transformer;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,6 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import com.google.common.base.CaseFormat;
-import com.woo.qb.segment.SqlSegment;
 
 /**
  * 
@@ -62,6 +62,7 @@ public class JdbcxService<Entity, PK extends Serializable> {
 
 	String getAllSql;
 	String getByIdSql;
+	String listByIdSql;
 	String deleteByIdSql;
 	String insertSql;
 
@@ -89,6 +90,7 @@ public class JdbcxService<Entity, PK extends Serializable> {
 	private void generateSql() {
 		getAllSql = MessageFormat.format("select * from {0}", tableName);
 		getByIdSql = MessageFormat.format("select * from {0} where {1} = :id", tableName, idColumnName);
+		listByIdSql = MessageFormat.format("select * from {0} where {1} in (:id)", tableName, idColumnName);
 		deleteByIdSql = MessageFormat.format("delete from {0} where {1} = :id", tableName, idColumnName);
 	}
 
@@ -102,6 +104,16 @@ public class JdbcxService<Entity, PK extends Serializable> {
 		}
 	}
 
+	public List<Entity> list(List<PK> list) {
+		try {
+			Map<String, Object> param = new HashMap<String, Object>();
+			param.put("id", list);
+			return DAO.queryForListBean(listByIdSql, param, entityClazz);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	public Page<Entity> getAll(Pageable p) {
 		return DAO.queryForListBean(getAllSql, entityClazz, p);
 	}
@@ -110,46 +122,14 @@ public class JdbcxService<Entity, PK extends Serializable> {
 		return DAO.queryForListBean(getAllSql, entityClazz);
 	}
 
-	public Entity findByNamedSqlSegment(SqlSegment segment) {
-		String condition = segment.asSql();
-		String sql = getAllSql + " where " + condition;
-		if (segment.isParamRequired()) {
-			return DAO.queryForBean(sql, segment.getKeyedParams(), entityClazz);
-		} else {
-			return DAO.queryForBean(sql, entityClazz);
-		}
-	}
 
-	public Entity findBySqlSegment(SqlSegment segment) {
-		String condition = segment.asSql();
-		String sql = getAllSql + " where " + condition;
-		if (segment.isParamRequired()) {
-			return DAO.queryForBean(sql, segment.getListParams(), entityClazz);
-		} else {
-			return DAO.queryForBean(sql, entityClazz);
-		}
-	}
-
-	public List<Entity> findListByNamedSqlSegment(SqlSegment segment) {
-		String condition = segment.asSql();
-		String sql = getAllSql + " where " + condition;
-		if (segment.isParamRequired()) {
-			return DAO.queryForListBean(sql, segment.getKeyedParams(), entityClazz);
-		} else {
-			return DAO.queryForListBean(sql, entityClazz);
-		}
-	}
-
-	public List<Entity> findListBySqlSegment(SqlSegment segment) {
-		String condition = segment.asSql();
-		String sql = getAllSql + " where " + condition;
-		if (segment.isParamRequired()) {
-			return DAO.queryForListBean(sql, segment.getListParams(), entityClazz);
-		} else {
-			return DAO.queryForListBean(sql, entityClazz);
-		}
-	}
-
+	/**
+	 * if no record matches condition, null will be returned
+	 * if more than one record matches, first will be returned
+	 * 
+	 * @param fvs
+	 * @return
+	 */
 	public Entity findByFields(FieldValue... fvs) {
 		Map<String, Object> param = new HashMap<String, Object>();
 		StringBuffer sb = new StringBuffer("select * from ").append(tableName).append(" where 1=1 ");
@@ -158,7 +138,13 @@ public class JdbcxService<Entity, PK extends Serializable> {
 			sb.append(" and ").append(dbFieldName).append(" = :").append(fv.getFieldName());
 			param.put(fv.getFieldName(), fv.getFieldValue());
 		}
-		return DAO.queryForBean(sb.toString(), param, entityClazz);
+		sb.append(" limit 1");
+		List<Entity> result = DAO.queryForListBean(sb.toString(), param, entityClazz);
+		if (CollectionUtils.isEmpty(result)) {
+			return null;
+		} else {
+			return result.get(0);
+		}
 	}
 
 	public List<Entity> findListByFields(FieldValue... fvs) {
@@ -278,7 +264,7 @@ public class JdbcxService<Entity, PK extends Serializable> {
 		}
 
 		// guess id column name
-		Field[] fields = entityClazz.getDeclaredFields();
+		Field[] fields = FieldUtils.getAllFields(entityClazz);
 		List<String> fieldNames = new ArrayList<String>(fields.length);
 		for (Field field : fields) {
 			if (field.isAnnotationPresent(Id.class)) {
@@ -303,9 +289,22 @@ public class JdbcxService<Entity, PK extends Serializable> {
 			idField = entityClazz.getDeclaredField(idColumnName);
 		}
 
+		idField.setAccessible(true);
 		logger.info("[{}] detected table meta: table-name `{}`, id-column-name `{}`", entityClazz, tableName,
 				idColumnName);
 
+		this.insertSql = generateInsertSql(fieldNames);
+		logger.debug("[{}] generated insert sql is `{}`", entityClazz, insertSql);
+
+		// TODO update sql ? i don't like this
+
+	}
+
+	/**
+	 * @param fieldNames
+	 * @return 
+	 */
+	protected String generateInsertSql(List<String> fieldNames) {
 		// generate insert sql
 		String valueKeys = StringUtils.collectionToDelimitedString(fieldNames, ",", ":", "");
 		CollectionUtils.transform(fieldNames, new Transformer<String, String>() {
@@ -315,9 +314,7 @@ public class JdbcxService<Entity, PK extends Serializable> {
 			}
 		});
 		String insertKeys = StringUtils.collectionToDelimitedString(fieldNames, ",");
-		insertSql = String.format("insert into %s (%s) values (%s)", tableName, insertKeys, valueKeys);
-		logger.debug("[{}] generated insert sql is `{}`", entityClazz, insertSql);
-
+		return String.format("insert into %s (%s) values (%s)", tableName, insertKeys, valueKeys);
 	}
 
 	/**
@@ -326,6 +323,20 @@ public class JdbcxService<Entity, PK extends Serializable> {
 	 */
 	protected String upperCamelToUnderscore(String value) {
 		return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, value);
+	}
+
+	@SuppressWarnings("unchecked")
+	public HashMap<PK, Entity> mapped(List<Entity> list) {
+		HashMap<PK, Entity> mapped = new HashMap<PK, Entity>(list.size());
+		for (Entity entity : list) {
+			try {
+				mapped.put((PK) idField.get(entity), entity);
+			} catch (Exception e) {
+				// ignore should not happen?
+				logger.warn("could not get id field value for entity {}", entity.getClass());
+			}
+		}
+		return mapped;
 	}
 
 	public static class FieldValue {
@@ -353,7 +364,6 @@ public class JdbcxService<Entity, PK extends Serializable> {
 
 	public static void main(String[] args) {
 		Class<?> clazz = String.class;
-
 		// System.out.println(clazz.getEnclosingClass().getName());
 		System.out.println(clazz.getName());
 		// System.out.println(clazz.getDeclaringClass().getName());

@@ -48,6 +48,11 @@ public class PaginationHelper {
 	}
 
 	public PageRequest getPagination(Integer pageSize, String sortby) {
+		String _sortby = context.getParameter(PAGINATION_ATTRNAME_SORT);
+		if (StringUtils.isNotBlank(_sortby)) {
+			sortby = _sortby;
+		}
+
 		String page = StringUtils.defaultString(context.getParameter(PAGINATION_ATTRNAME_PAGE), "1");
 		String size = StringUtils.defaultString(context.getParameter(PAGINATION_ATTRNAME_PAGESIZE),
 				String.valueOf(pageSize));
@@ -63,8 +68,7 @@ public class PaginationHelper {
 	}
 
 	public PageRequest getPagination() {
-		String sortby = context.getParameter(PAGINATION_ATTRNAME_SORT);
-		return getPagination(sortby);
+		return getPagination(null);
 	}
 
 }

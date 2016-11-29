@@ -110,6 +110,7 @@ public class JsonMapper {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public <T> List<T> getListBean(String jsonString, Class<T> beanClazz) {
 		try {
 			JavaType typeRef = TypeFactory.defaultInstance().constructParametricType(List.class, beanClazz);
@@ -133,7 +134,8 @@ public class JsonMapper {
 	public <K, IK, IV> HashMap<K, Map<IK, IV>> getMapBean(String jsonString, Class<K> keyClazz, Class<IK> innerKeyClazz,
 			Class<IV> innerValueClazz) {
 		try {
-			JavaType innerType = TypeFactory.defaultInstance().constructMapType(HashMap.class, innerKeyClazz, innerValueClazz);
+			JavaType innerType = TypeFactory.defaultInstance().constructMapType(HashMap.class, innerKeyClazz,
+					innerValueClazz);
 			JavaType keyType = TypeFactory.defaultInstance().constructType(keyClazz);
 			JavaType typeRef = TypeFactory.defaultInstance().constructMapType(HashMap.class, keyType, innerType);
 			return mapper.readValue(jsonString, typeRef);
@@ -200,7 +202,6 @@ public class JsonMapper {
 		mapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
 	}
 
-
 	/**
 	 * 取出Mapper做进一步的设置或使用其他序列化API.
 	 */
@@ -219,7 +220,8 @@ public class JsonMapper {
 		 * com.fasterxml.jackson.databind.DeserializationContext)
 		 */
 		@Override
-		public Date deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+		public Date deserialize(JsonParser jp, DeserializationContext ctxt)
+				throws IOException, JsonProcessingException {
 			try {
 				return super.deserialize(jp, ctxt);
 			} catch (Exception e) {
@@ -272,6 +274,7 @@ public class JsonMapper {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public static void main(String[] args) {
 
 		String json = "[{\"asddd\":1}";

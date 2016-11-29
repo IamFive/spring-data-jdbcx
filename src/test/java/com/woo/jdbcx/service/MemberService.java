@@ -9,7 +9,7 @@ package com.woo.jdbcx.service;
 
 import org.springframework.stereotype.Service;
 
-import com.woo.jdbcx.JdbcxService;
+import com.woo.jdbcx.DJdbcxService;
 import com.woo.jdbcx.modal.Member;
 
 /**
@@ -18,7 +18,7 @@ import com.woo.jdbcx.modal.Member;
  * @version $Revision$
  */
 @Service
-public class MemberService extends JdbcxService<Member, Integer> {
+public class MemberService extends DJdbcxService<Member, Integer> {
 
 
 }
