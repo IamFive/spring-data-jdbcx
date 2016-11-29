@@ -43,7 +43,7 @@ public class DJdbcxServiceTest extends H2Env {
 	MemberService memberService;
 
 	@Test
-	public void testFindNamedSqlSegmetn() {
+	public void testFindNamedSqlSegment() {
 		SegmentFactory $ = SegmentFactory.namedQuery();
 		CombinedSqlSegment ss = $.and($.eq("id", 1), $.eq("regist_ip", "127.0.0.1"));
 		Member member = memberService.findByNamedSqlSegment(ss);

@@ -25,6 +25,7 @@ import javax.persistence.Transient;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Transformer;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -263,7 +264,7 @@ public class JdbcxService<Entity, PK extends Serializable> {
 		}
 
 		// guess id column name
-		Field[] fields = entityClazz.getDeclaredFields();
+		Field[] fields = FieldUtils.getAllFields(entityClazz);
 		List<String> fieldNames = new ArrayList<String>(fields.length);
 		for (Field field : fields) {
 			if (field.isAnnotationPresent(Id.class)) {
