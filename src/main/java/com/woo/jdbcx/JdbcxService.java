@@ -25,6 +25,7 @@ import javax.persistence.Transient;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Transformer;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,6 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import com.google.common.base.CaseFormat;
-import com.woo.qb.segment.SqlSegment;
 
 /**
  * 
@@ -122,48 +122,11 @@ public class JdbcxService<Entity, PK extends Serializable> {
 		return DAO.queryForListBean(getAllSql, entityClazz);
 	}
 
-	public Entity findByNamedSqlSegment(SqlSegment segment) {
-		String condition = segment.asSql();
-		String sql = getAllSql + " where " + condition;
-		if (segment.isParamRequired()) {
-			return DAO.queryForBean(sql, segment.getKeyedParams(), entityClazz);
-		} else {
-			return DAO.queryForBean(sql, entityClazz);
-		}
-	}
-
-	public Entity findBySqlSegment(SqlSegment segment) {
-		String condition = segment.asSql();
-		String sql = getAllSql + " where " + condition;
-		if (segment.isParamRequired()) {
-			return DAO.queryForBean(sql, segment.getListParams(), entityClazz);
-		} else {
-			return DAO.queryForBean(sql, entityClazz);
-		}
-	}
-
-	public List<Entity> findListByNamedSqlSegment(SqlSegment segment) {
-		String condition = segment.asSql();
-		String sql = getAllSql + " where " + condition;
-		if (segment.isParamRequired()) {
-			return DAO.queryForListBean(sql, segment.getKeyedParams(), entityClazz);
-		} else {
-			return DAO.queryForListBean(sql, entityClazz);
-		}
-	}
-
-	public List<Entity> findListBySqlSegment(SqlSegment segment) {
-		String condition = segment.asSql();
-		String sql = getAllSql + " where " + condition;
-		if (segment.isParamRequired()) {
-			return DAO.queryForListBean(sql, segment.getListParams(), entityClazz);
-		} else {
-			return DAO.queryForListBean(sql, entityClazz);
-		}
-	}
 
 	/**
-	 * TODO use limit 1 instead
+	 * if no record matches condition, null will be returned
+	 * if more than one record matches, first will be returned
+	 * 
 	 * @param fvs
 	 * @return
 	 */
@@ -175,7 +138,13 @@ public class JdbcxService<Entity, PK extends Serializable> {
 			sb.append(" and ").append(dbFieldName).append(" = :").append(fv.getFieldName());
 			param.put(fv.getFieldName(), fv.getFieldValue());
 		}
-		return DAO.queryForBean(sb.toString(), param, entityClazz);
+		sb.append(" limit 1");
+		List<Entity> result = DAO.queryForListBean(sb.toString(), param, entityClazz);
+		if (CollectionUtils.isEmpty(result)) {
+			return null;
+		} else {
+			return result.get(0);
+		}
 	}
 
 	public List<Entity> findListByFields(FieldValue... fvs) {
@@ -295,7 +264,7 @@ public class JdbcxService<Entity, PK extends Serializable> {
 		}
 
 		// guess id column name
-		Field[] fields = entityClazz.getDeclaredFields();
+		Field[] fields = FieldUtils.getAllFields(entityClazz);
 		List<String> fieldNames = new ArrayList<String>(fields.length);
 		for (Field field : fields) {
 			if (field.isAnnotationPresent(Id.class)) {

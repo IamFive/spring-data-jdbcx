@@ -17,14 +17,18 @@
 
 package com.woo.jdbcx.test;
 
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.woo.jdbcx.H2Env;
-import com.woo.jdbcx.JdbcxService.FieldValue;
 import com.woo.jdbcx.modal.Member;
 import com.woo.jdbcx.service.MemberService;
+import com.woo.qb.segment.SegmentFactory;
+import com.woo.qb.segment.SqlSegment;
+import com.woo.qb.segment.impl.combined.CombinedSqlSegment;
 
 
 /**
@@ -32,36 +36,26 @@ import com.woo.jdbcx.service.MemberService;
  * @date 2016年1月21日
  * @version $Revision$
  */
-public class JdbcxServiceTest extends H2Env {
+public class DJdbcxServiceTest extends H2Env {
 
 
 	@Autowired
 	MemberService memberService;
 
 	@Test
-	public void testGetById() {
-		Member member = memberService.get(1);
+	public void testFindNamedSqlSegment() {
+		SegmentFactory $ = SegmentFactory.namedQuery();
+		CombinedSqlSegment ss = $.and($.eq("id", 1), $.eq("regist_ip", "127.0.0.1"));
+		Member member = memberService.findByNamedSqlSegment(ss);
 		Assert.assertEquals(member.getName(), "woo");
 	}
 
 	@Test
-	public void testDelById() {
-		int count = memberService.delete(2);
-		Assert.assertEquals(count, 1);
+	public void testFindListByNamedSqlSegment() {
+		SegmentFactory $ = SegmentFactory.namedQuery();
+		SqlSegment ss = $.eq("regist_ip", "127.0.0.1");
+		List<Member> member = memberService.findListByNamedSqlSegment(ss);
+		Assert.assertEquals(member.size(), 1);
 	}
 
-	@Test
-	public void testFindByField() {
-		Member member = memberService.findByFields(FieldValue.of("id", 1), FieldValue.of("regist_ip", "127.0.0.1"));
-		Assert.assertEquals(member.getName(), "woo");
-	}
-
-	@Test
-	public void testCountByField() {
-		Integer count = memberService.countByFields(FieldValue.of("id", 1), FieldValue.of("regist_ip", "127.0.0.1"));
-		Assert.assertEquals(count.intValue(), 1);
-
-		Integer count2 = memberService.countByFields(FieldValue.of("id", 0), FieldValue.of("regist_ip", "127.0.0.1"));
-		Assert.assertEquals(count2.intValue(), 0);
-	}
 }

@@ -16,12 +16,12 @@
 	</appender>
 
 	<!-- project default level -->
-	<logger name="jdbc.sqltiming" level="info" />
+	<logger name="jdbc.sqltiming" level="ERROR" />
 	<logger name="jdbc.sqlonly" level="ERROR" />
 	<logger name="jdbc.resultset" level="ERROR" />
 	<logger name="jdbc.audit" level="ERROR" />
 	<logger name="jdbc.connection" level="ERROR" />
-	<logger name="jdbc.resultsettable" level="info" />
+	<logger name="jdbc.resultsettable" level="ERROR" />
 
 	<root level="INFO">
 		<appender-ref ref="console" />
