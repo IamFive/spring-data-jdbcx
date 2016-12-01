@@ -122,7 +122,6 @@ public class JdbcxService<Entity, PK extends Serializable> {
 		return DAO.queryForListBean(getAllSql, entityClazz);
 	}
 
-
 	/**
 	 * if no record matches condition, null will be returned
 	 * if more than one record matches, first will be returned
@@ -267,7 +266,8 @@ public class JdbcxService<Entity, PK extends Serializable> {
 		Field[] fields = FieldUtils.getAllFields(entityClazz);
 		List<String> fieldNames = new ArrayList<String>(fields.length);
 		for (Field field : fields) {
-			if (field.isAnnotationPresent(Id.class)) {
+			int modifiers = field.getModifiers();
+			if (field.isAnnotationPresent(Id.class) || field.getName().equals("id")) {
 				if (field.isAnnotationPresent(Column.class)) {
 					Column column = field.getAnnotation(Column.class);
 					if (column != null) {
@@ -278,7 +278,8 @@ public class JdbcxService<Entity, PK extends Serializable> {
 					idColumnName = upperCamelToUnderscore(field.getName());
 				}
 				idField = field;
-			} else if (!field.isAnnotationPresent(Transient.class) && !Modifier.isFinal(field.getModifiers())) {
+			} else if (!field.isAnnotationPresent(Transient.class) && !Modifier.isFinal(modifiers)
+					&& !Modifier.isStatic(modifiers) && !Modifier.isTransient(modifiers)) {
 				fieldNames.add(field.getName());
 			}
 		}
