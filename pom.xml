@@ -1,19 +1,103 @@
-<!-- Copyright 2014-2016 the original author or authors. Licensed under the 
-	Apache License, Version 2.0 (the "License"); you may not use this file except 
-	in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
-	Unless required by applicable law or agreed to in writing, software distributed 
-	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
-	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
-	the specific language governing permissions and limitations under the License. -->
+<!-- Copyright 2014-2016 the original author or authors. Licensed under the Apache License, Version 2.0 (the "License"); 
+	you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS 
+	IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language 
+	governing permissions and limitations under the License. -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.woo</groupId>
+	<groupId>net.turnbig</groupId>
 	<artifactId>spring-data-jdbcx</artifactId>
-	<version>1.1.8</version>
+	<version>2.0.0</version>
+
+	<url>https://github.com/IamFive/spring-data-jdbcx</url>
+	<description>spring boot starter for gRPC - host gRPC with spring-context support</description>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>QianBiao Ng</name>
+			<email>xmufive@gmail.com</email>
+		</developer>
+	</developers>
+	<scm>
+		<connection>scm:git:https://github.com/IamFive/spring-data-jdbcx</connection>
+		<developerConnection>scm:git:git@github.com:IamFive/spring-data-jdbcx.git</developerConnection>
+		<url>https://github.com/IamFive/spring-data-jdbcx</url>
+		<tag>2.0.0</tag>
+	</scm>
+
+	<profiles>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<!-- Source -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>2.2.1</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<!-- Javadoc -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>2.9.1</version>
+						<configuration>
+							<additionalparam>-Xdoclint:none</additionalparam>
+						</configuration>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<!-- GPG -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.5</version>
+						<executions>
+							<execution>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+			<distributionManagement>
+				<snapshotRepository>
+					<id>oss</id>
+					<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+				</snapshotRepository>
+				<repository>
+					<id>oss</id>
+					<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+				</repository>
+			</distributionManagement>
+		</profile>
+	</profiles>
 
 	<properties>
-		<spring-boot.version>1.3.4.RELEASE</spring-boot.version>
+		<spring-boot.version>1.4.2.RELEASE</spring-boot.version>
 		<commons-lang3.version>3.2.1</commons-lang3.version>
 		<assertj.version>2.2.0</assertj.version>
 		<jsqlparser.version>0.9.4</jsqlparser.version>
@@ -24,20 +108,6 @@
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 	</properties>
-
-	<distributionManagement>
-		<repository>
-			<id>releases</id>
-			<name>Internal Releases</name>
-			<url>http://192.168.7.9:8081/nexus/content/repositories/releases/</url>
-		</repository>
-		<snapshotRepository>
-			<id>snapshot</id>
-			<name>Internal Snapshots</name>
-			<url>http://192.168.7.9:8081/nexus/content/repositories/snapshots/</url>
-		</snapshotRepository>
-	</distributionManagement>
-
 
 	<repositories>
 		<repository>
@@ -76,11 +146,11 @@
 			<artifactId>jsqlparser</artifactId>
 			<version>${jsqlparser.version}</version>
 		</dependency>
-		
+
 		<dependency>
-			<groupId>com.woo</groupId>
+			<groupId>net.turnbig</groupId>
 			<artifactId>query-builder</artifactId>
-			<version>1.1.1</version>
+			<version>2.0.0</version>
 			<optional>true</optional>
 		</dependency>
 
@@ -94,7 +164,7 @@
 			<artifactId>commons-io</artifactId>
 			<version>2.4</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
@@ -140,7 +210,7 @@
 			<artifactId>log4jdbc-log4j2-jdbc4.1</artifactId>
 			<version>1.16</version>
 		</dependency>
-		
+
 		<!-- pageable -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -154,8 +224,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jdbc</artifactId>
 			<scope>test</scope>
-			<!-- <exclusions> <exclusion> <artifactId>tomcat-jdbc</artifactId> <groupId>org.apache.tomcat</groupId> 
-				</exclusion> </exclusions> -->
+			<!-- <exclusions> <exclusion> <artifactId>tomcat-jdbc</artifactId> <groupId>org.apache.tomcat</groupId> </exclusion> </exclusions> -->
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -166,7 +235,6 @@
 		<dependency>
 			<groupId>org.assertj</groupId>
 			<artifactId>assertj-core</artifactId>
-			<version>${assertj.version}</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -181,8 +249,7 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- <dependency> <groupId>com.zaxxer</groupId> <artifactId>HikariCP</artifactId> 
-			<scope>test</scope> </dependency> -->
+		<!-- <dependency> <groupId>com.zaxxer</groupId> <artifactId>HikariCP</artifactId> <scope>test</scope> </dependency> -->
 	</dependencies>
 
 	<build>
