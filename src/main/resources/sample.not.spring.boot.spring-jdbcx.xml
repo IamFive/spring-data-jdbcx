@@ -3,7 +3,7 @@
 	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
-	<bean class="com.woo.jdbcx.sql.loader.SqlLoader" depends-on="properties">
+	<bean class="net.turnbig.jdbcx.sql.loader.SqlLoader" depends-on="properties">
 		<property name="templatePath" value="${spring.jdbcx.sql.template-path}" />
 		<property name="updateDelay" value="${spring.jdbcx.sql.update-delay}" />
 	</bean>
