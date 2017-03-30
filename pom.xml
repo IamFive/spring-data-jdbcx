@@ -8,10 +8,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.turnbig</groupId>
 	<artifactId>spring-data-jdbcx</artifactId>
-	<version>2.0.0</version>
+	<version>2.0.1</version>
 
 	<url>https://github.com/IamFive/spring-data-jdbcx</url>
-	<description>spring boot starter for gRPC - host gRPC with spring-context support</description>
+	<description>spring data JDBC extension</description>
 	<licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>
@@ -97,12 +97,12 @@
 	</profiles>
 
 	<properties>
-		<spring-boot.version>1.4.2.RELEASE</spring-boot.version>
+		<spring-boot.version>1.5.2.RELEASE</spring-boot.version>
 		<commons-lang3.version>3.2.1</commons-lang3.version>
 		<assertj.version>2.2.0</assertj.version>
 		<jsqlparser.version>0.9.4</jsqlparser.version>
 		<freemarker.version>2.3.23</freemarker.version>
-		<guava.version>18.0</guava.version>
+		<guava.version>21.0-rc2</guava.version>
 		<java.version>1.7</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
@@ -151,6 +151,7 @@
 			<groupId>net.turnbig</groupId>
 			<artifactId>query-builder</artifactId>
 			<version>2.0.0</version>
+			<scope>compile</scope>
 			<optional>true</optional>
 		</dependency>
 
@@ -246,7 +247,7 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<scope>runtime</scope>
+			<scope>test</scope>
 		</dependency>
 
 		<!-- <dependency> <groupId>com.zaxxer</groupId> <artifactId>HikariCP</artifactId> <scope>test</scope> </dependency> -->
