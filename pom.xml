@@ -10,6 +10,7 @@
 	<artifactId>spring-data-jdbcx</artifactId>
 	<version>2.0.1</version>
 
+	<name>net.turnbig:spring-data-jdbcx</name>
 	<url>https://github.com/IamFive/spring-data-jdbcx</url>
 	<description>spring data JDBC extension</description>
 	<licenses>
@@ -36,6 +37,28 @@
 			<id>release</id>
 			<build>
 				<plugins>
+					<plugin>
+						<groupId>org.sonatype.plugins</groupId>
+						<artifactId>nexus-staging-maven-plugin</artifactId>
+						<version>1.6.7</version>
+						<extensions>true</extensions>
+						<configuration>
+							<serverId>ossrh</serverId>
+							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+							<autoReleaseAfterClose>true</autoReleaseAfterClose>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-release-plugin</artifactId>
+						<version>2.5.3</version>
+						<configuration>
+							<autoVersionSubmodules>true</autoVersionSubmodules>
+							<useReleaseProfile>false</useReleaseProfile>
+							<releaseProfiles>release</releaseProfiles>
+							<goals>deploy</goals>
+						</configuration>
+					</plugin>
 					<!-- Source -->
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
