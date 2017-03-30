@@ -1,6 +1,21 @@
 # spring-data-jdbcx
 Spring-data-jdbcx is an extention for spring-jdbc-template. Spring-data-jdbcx makes it easy to connect with databases.
 
+## how to use
+
+You can download from maven central, add dependency to your pom.xml
+
+```
+	<dependency>
+		<groupId>net.turnbig</groupId>
+		<artifactId>spring-data-jdbcx</artifactId>
+	</dependency>
+```
+
+For more example, please check the [unit tests](https://github.com/IamFive/spring-data-jdbcx/tree/master/src/test/java/net/turnbig/jdbcx/test). 
+
+
+
 ## Planed Features
 
 ### abstract more friendly jdbc-template-API
