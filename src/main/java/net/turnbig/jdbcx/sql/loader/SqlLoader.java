@@ -84,7 +84,6 @@ public class SqlLoader {
 		this.configuration = configuration;
 	}
 
-
 	private Template getTemplate(String name) {
 		try {
 			return configuration.getTemplate(name);
@@ -151,8 +150,6 @@ public class SqlLoader {
 			throw new RuntimeException(e);
 		}
 	}
-
-
 
 	public void setTemplateEncoding(String templateEncoding) {
 		this.templateEncoding = templateEncoding;
