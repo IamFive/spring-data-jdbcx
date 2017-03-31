@@ -16,7 +16,8 @@ You can download from maven central, add dependency to your pom.xml
 For more example, please check the [unit tests](https://github.com/IamFive/spring-data-jdbcx/tree/master/src/test/java/net/turnbig/jdbcx/test). 
 
 
-To integrate with spring boot, add configurations below:
+To integrate with spring boot, add `net.turnbig.jdbcx` to auto scan package. 
+And if you want to use the sql template feature, add configurations below:
 
 ```
 # SQL template loading path
