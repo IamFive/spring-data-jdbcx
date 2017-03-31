@@ -15,6 +15,18 @@ You can download from maven central, add dependency to your pom.xml
 For more example, please check the [unit tests](https://github.com/IamFive/spring-data-jdbcx/tree/master/src/test/java/net/turnbig/jdbcx/test). 
 
 
+To integrate with spring boot, add configurations below:
+
+```
+# SQL template loading path
+spring.jdbcx.sql.template-path = classpath:/sql-template
+# SQL template encoding
+spring.jdbcx.sql.template-encoding = UTF-8
+# SQL auto refresh delay
+spring.jdbcx.sql.update-delay = 0
+```
+
+
 
 ## Planed Features
 

@@ -62,11 +62,12 @@ public class SqlLoader {
 	String[] templatePath;
 	String templateEncoding = "UTF-8";
 	Long updateDelay = 5000L;
+	String relocateTo;
 
 	private Configuration configuration;
 
 	@PostConstruct
-	public void initConfiguration() throws IOException {
+	public void initConfiguration() throws Exception {
 		if (templatePath == null || templatePath.length == 0) {
 			throw new RuntimeException("no sql template path has been set");
 		}
@@ -74,7 +75,9 @@ public class SqlLoader {
 		// build template loader
 		SqlTemplateLoaderFactory sqlTemplateFactory = new SqlTemplateLoaderFactory();
 		sqlTemplateFactory.setLocations(templatePath);
-		SqlTemplateLoader sqlTemplateLoader = sqlTemplateFactory.createSqlTemplateLoader();
+		sqlTemplateFactory.setRelocateTo(relocateTo);
+		sqlTemplateFactory.afterPropertiesSet();
+		SqlTemplateLoader sqlTemplateLoader = sqlTemplateFactory.getSqlTemplateLoader();
 
 		// build configuration
 		Configuration configuration = new Configuration(Configuration.getVersion());
@@ -161,6 +164,13 @@ public class SqlLoader {
 
 	public void setTemplatePath(String[] templatePath) {
 		this.templatePath = templatePath;
+	}
+
+	/**
+	 * @param relocateTo the relocateTo to set
+	 */
+	public void setRelocateTo(String relocateTo) {
+		this.relocateTo = relocateTo;
 	}
 
 }
