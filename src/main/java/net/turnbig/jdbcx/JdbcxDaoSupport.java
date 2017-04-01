@@ -29,6 +29,7 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -57,8 +58,11 @@ public class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 
 	HashMap<Class<?>, BeanPropertyRowMapper<?>> beanPropsRowMapperMapper = new HashMap<Class<?>, BeanPropertyRowMapper<?>>();
 
-	// used to convert some special jdbc value type to java object
+	// used to convert some special JDBC value type to java object
+	// Due to there are multiple conversion-service at most time,
+	// so JDBCX will only auto wire conversion-service named jdbcxConversionService
 	@Autowired(required = false)
+	@Qualifier("jdbcxConversionService")
 	ConversionService conversionService;
 
 	SQLDialect dialect;
