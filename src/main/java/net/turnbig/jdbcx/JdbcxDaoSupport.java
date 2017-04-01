@@ -39,7 +39,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Component;
 
 import net.turnbig.jdbcx.dialect.Databases;
 import net.turnbig.jdbcx.dialect.SQLDialect;
@@ -52,7 +51,6 @@ import net.turnbig.jdbcx.params.RichBeanPropertySqlParameterSource;
  * @date 2016年1月21日
  * @version $Revision$
  */
-@Component
 public class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 
 	private static final Logger logger = LoggerFactory.getLogger(JdbcxDaoSupport.class);
@@ -60,7 +58,7 @@ public class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 	HashMap<Class<?>, BeanPropertyRowMapper<?>> beanPropsRowMapperMapper = new HashMap<Class<?>, BeanPropertyRowMapper<?>>();
 
 	// used to convert some special jdbc value type to java object
-	// @Autowired(required = false)
+	@Autowired(required = false)
 	ConversionService conversionService;
 
 	SQLDialect dialect;
