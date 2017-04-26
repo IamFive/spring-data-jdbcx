@@ -29,14 +29,13 @@ public class DJdbcxService<Entity, PK extends Serializable> extends JdbcxService
 
 	private static final Logger logger = LoggerFactory.getLogger(DJdbcxService.class);
 
-
 	public Entity findByNamedSqlSegment(SqlSegment segment) {
 		String condition = segment.asSql();
 		String sql = getAllSql + " where " + condition;
 		if (segment.isParamRequired()) {
 			logger.error("{}", segment.getKeyedParams());
 			List<Entity> results = DAO.queryForListBean(sql, segment.getKeyedParams(), entityClazz);
-			if(CollectionUtils.isEmpty(results)) {
+			if (CollectionUtils.isEmpty(results)) {
 				return null;
 			}
 			return results.get(0);
