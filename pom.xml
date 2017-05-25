@@ -8,7 +8,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.turnbig</groupId>
 	<artifactId>spring-data-jdbcx</artifactId>
-	<version>2.0.4</version>
+	<version>2.0.2</version>
 
 	<name>net.turnbig:spring-data-jdbcx</name>
 	<url>https://github.com/IamFive/spring-data-jdbcx</url>
