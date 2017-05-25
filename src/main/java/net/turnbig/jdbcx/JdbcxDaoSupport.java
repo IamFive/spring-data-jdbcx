@@ -29,6 +29,7 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -39,7 +40,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Component;
 
 import net.turnbig.jdbcx.dialect.Databases;
 import net.turnbig.jdbcx.dialect.SQLDialect;
@@ -52,15 +52,17 @@ import net.turnbig.jdbcx.params.RichBeanPropertySqlParameterSource;
  * @date 2016年1月21日
  * @version $Revision$
  */
-@Component
 public class JdbcxDaoSupport extends NamedParameterJdbcDaoSupport {
 
 	private static final Logger logger = LoggerFactory.getLogger(JdbcxDaoSupport.class);
 
 	HashMap<Class<?>, BeanPropertyRowMapper<?>> beanPropsRowMapperMapper = new HashMap<Class<?>, BeanPropertyRowMapper<?>>();
 
-	// used to convert some special jdbc value type to java object
-	// @Autowired(required = false)
+	// used to convert some special JDBC value type to java object
+	// Due to there are multiple conversion-service at most time,
+	// so JDBCX will only auto wire conversion-service named jdbcxConversionService
+	@Autowired(required = false)
+	@Qualifier("jdbcxConversionService")
 	ConversionService conversionService;
 
 	SQLDialect dialect;

@@ -39,6 +39,8 @@ import org.springframework.util.StringUtils;
 
 import com.google.common.base.CaseFormat;
 
+import net.turnbig.jdbcx.sql.loader.SqlLoader;
+
 /**
  * 
  * basic service with jdbcx-paging-dao-support
@@ -59,6 +61,9 @@ public class JdbcxService<Entity, PK extends Serializable> {
 
 	@Autowired
 	protected JdbcxPagingDaoSupport DAO;
+
+	@Autowired(required = false)
+	protected SqlLoader SQL;
 
 	String getAllSql;
 	String getByIdSql;

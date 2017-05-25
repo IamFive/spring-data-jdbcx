@@ -36,7 +36,9 @@ public class PGObjectConverter implements ConditionalGenericConverter {
 		this.conversionService = conversionService;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.springframework.core.convert.converter.GenericConverter#getConvertibleTypes()
 	 */
 	@Override
@@ -44,11 +46,15 @@ public class PGObjectConverter implements ConditionalGenericConverter {
 		Set<ConvertiblePair> convertables = new HashSet<ConvertiblePair>();
 		convertables.add(new ConvertiblePair(PGobject.class, Map.class));
 		convertables.add(new ConvertiblePair(PGobject.class, List.class));
+		convertables.add(new ConvertiblePair(PGobject.class, PGConvertable.class));
 		return convertables;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.springframework.core.convert.converter.GenericConverter#convert(java.lang.Object, org.springframework.core.convert.TypeDescriptor, org.springframework.core.convert.TypeDescriptor)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.springframework.core.convert.converter.GenericConverter#convert(java.lang.Object,
+	 * org.springframework.core.convert.TypeDescriptor, org.springframework.core.convert.TypeDescriptor)
 	 */
 	@Override
 	public Object convert(Object source, TypeDescriptor sourceType, TypeDescriptor targetType) {
@@ -71,7 +77,7 @@ public class PGObjectConverter implements ConditionalGenericConverter {
 						return bean;
 					}
 				} else {
-					//TODO
+					// TODO
 					throw new RuntimeException("postgres " + type + " convertor is not implemented");
 				}
 			}
@@ -80,8 +86,11 @@ public class PGObjectConverter implements ConditionalGenericConverter {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.springframework.core.convert.converter.ConditionalConverter#matches(org.springframework.core.convert.TypeDescriptor, org.springframework.core.convert.TypeDescriptor)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.springframework.core.convert.converter.ConditionalConverter#matches(org.springframework.core.convert.
+	 * TypeDescriptor, org.springframework.core.convert.TypeDescriptor)
 	 */
 	@Override
 	public boolean matches(TypeDescriptor sourceType, TypeDescriptor targetType) {

@@ -23,12 +23,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.convert.ConversionService;
-import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.stereotype.Component;
 
 import net.sf.log4jdbc.sql.jdbcapi.DataSourceSpy;
-import net.turnbig.jdbcx.convertor.PGObjectConverter;
+import net.turnbig.jdbcx.convertor.PGConversionServiceFactoryBean;
 
 /**
  * @author Woo Cupid
@@ -54,19 +52,13 @@ public class Configurations {
 		}
 	}
 
-
 	@org.springframework.context.annotation.Configuration
-	public static class ConversionServiceConfig {
-
+	public static class JdbcxConversionService {
 		@Bean
-		protected ConversionService buildConversionService() {
-			DefaultFormattingConversionService cs = new DefaultFormattingConversionService(true);
-			//			cs.addConverter(String.class, Date.class, new StringToDateConverter());
-			//			cs.addConverter(String.class, Timestamp.class, new StringToDateConverter());
-			cs.addConverter(new PGObjectConverter(cs));
-			return cs;
+		public PGConversionServiceFactoryBean jdbcxConversionService() {
+			PGConversionServiceFactoryBean factoryBean = new PGConversionServiceFactoryBean();
+			return factoryBean;
 		}
 	}
-
 
 }

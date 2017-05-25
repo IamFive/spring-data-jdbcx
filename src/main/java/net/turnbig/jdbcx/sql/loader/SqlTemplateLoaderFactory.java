@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -16,6 +15,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.FactoryBean;
@@ -23,6 +23,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.support.ResourcePatternUtils;
 
 import freemarker.cache.StringTemplateLoader;
 import net.turnbig.jdbcx.sql.loader.SqlTemplateLoaderFactory.SqlTemplateLoader;
@@ -64,7 +65,7 @@ public class SqlTemplateLoaderFactory implements FactoryBean<SqlTemplateLoader>,
 	/**
 	 * 
 	 */
-	private static final String SQL_TEMPLATE_SYNC_FOLDER = ".sql.template.sync";
+	private static final String DFT_RELOCATED_FOLDER_NAME = ".jdbcx";
 
 	private static Logger logger = LoggerFactory.getLogger(SqlTemplateLoaderFactory.class);
 
@@ -72,7 +73,11 @@ public class SqlTemplateLoaderFactory implements FactoryBean<SqlTemplateLoader>,
 
 	private String[] locations;
 	private SqlTemplateLoader sqlTemplateLoader = new SqlTemplateLoader();
-	private static String syncSqlTplFolder;
+
+	// when locations real path is jar:file: (not a plain file path)
+	// we will copy those file "relocateTo"
+	private String relocateTo;
+	private String runtimeRelocateTo; // we use a new relocate folder based on current-time
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -80,16 +85,29 @@ public class SqlTemplateLoaderFactory implements FactoryBean<SqlTemplateLoader>,
 	}
 
 	/**
+	 * create relocate to folder
+	 * 
+	 * if relocate to base is not specified, use "${user.home}/.jdbcx/${now().toLong()}"
+	 */
+	protected String getRuntimeRelocateTo() {
+
+		if (StringUtils.isBlank(relocateTo)) {
+			relocateTo = System.getProperty("user.home") + File.separator + DFT_RELOCATED_FOLDER_NAME;
+		}
+
+		if (runtimeRelocateTo == null) {
+			runtimeRelocateTo = relocateTo + File.separator + new Date().getTime();
+			logger.info("Runtime relocate to path: {}", runtimeRelocateTo);
+			new File(runtimeRelocateTo).mkdirs();
+		}
+		return runtimeRelocateTo;
+	}
+
+	/**
 	 * @return 
 	 * @throws IOException
 	 */
 	public SqlTemplateLoader createSqlTemplateLoader() throws IOException {
-
-		// create sync sql folder
-		syncSqlTplFolder = MessageFormat.format("{0}{1}{2}",
-				resourceLoader.getResource("/").getFile().getAbsolutePath(), File.separator, SQL_TEMPLATE_SYNC_FOLDER);
-		new File(syncSqlTplFolder).mkdirs();
-
 		for (String path : locations) {
 			loadTemplates(path);
 		}
@@ -106,51 +124,34 @@ public class SqlTemplateLoaderFactory implements FactoryBean<SqlTemplateLoader>,
 	 * @throws IOException
 	 */
 	public void loadTemplates(String path) throws IOException {
-		Resource r = resourceLoader.getResource(path);
-		if (r.exists()) {
-			List<SqlTemplate> templates = new ArrayList<SqlTemplate>();
-			try {
-				templates = parseTemplate(r.getFile());
-			} catch (Exception e) {
-				if (path.endsWith(".xml")) {
-					// ignore all not file path
-					int idx = path.contains("/") ? path.lastIndexOf("/") : path.indexOf(":");
-					String filename = path.substring(idx + 1);
-					String syncToFileName = syncSqlTplFolder + File.separator + filename;
-					logger.debug("It seems {} is not a disk file, sync to {}", syncToFileName);
-					InputStream is = r.getInputStream();
-					IOUtils.copy(is, new FileOutputStream(new File(syncToFileName)));
-					IOUtils.closeQuietly(is);
+		// support of classpath:folder/*.xml
+		Resource[] resources = ResourcePatternUtils.getResourcePatternResolver(resourceLoader).getResources(path);
+		for (Resource r : resources) {
+			if (r.exists()) {
+				List<SqlTemplate> templates = new ArrayList<SqlTemplate>();
+				try {
+					templates = parseTemplate(r.getFile());
+				} catch (Exception e) {
+					// ignore all not XML file path
+					String filename = r.getFilename();
+					if (filename.endsWith(".xml")) {
+						String copiedSqlTemplateFile = getRuntimeRelocateTo() + File.separator + filename;
+						logger.debug("It seems {} is not a disk file, copied to {}", r.getURI(), copiedSqlTemplateFile);
+						InputStream is = r.getInputStream();
+						IOUtils.copy(is, new FileOutputStream(new File(copiedSqlTemplateFile)));
+						IOUtils.closeQuietly(is);
+						templates = parseTemplate(new File(copiedSqlTemplateFile));
+					}
+				}
 
-					templates = parseTemplate(new File(syncToFileName));
+				for (SqlTemplate xmlTemplate : templates) {
+					sqlTemplateLoader.putTemplate(xmlTemplate.getName(), xmlTemplate.getTemplate(),
+							xmlTemplate.getLastModified());
+					sqlTemplateLoader.addMapper(sqlTemplateLoader.findTemplateSource(xmlTemplate.getName()),
+							xmlTemplate.getTplFilePath());
 				}
 			}
-
-			for (SqlTemplate xmlTemplate : templates) {
-				sqlTemplateLoader.putTemplate(xmlTemplate.getName(), xmlTemplate.getTemplate(), xmlTemplate.getLastModified());
-				sqlTemplateLoader.addMapper(sqlTemplateLoader.findTemplateSource(xmlTemplate.getName()), xmlTemplate.getTplFilePath());
-			}
 		}
-	}
-
-	/**
-	 * when template file is in JAR-File, we can't get the File directly
-	 * 
-	 * @param is
-	 * @return
-	 * @throws IOException
-	 */
-	public static List<SqlTemplate> parseTemplate(InputStream is) throws IOException {
-		String content = IOUtils.toString(is);
-		logger.debug("It seems the sql template is in JAR file, copy it to {}", syncSqlTplFolder);
-		List<SqlTemplate> list = new ArrayList<SqlTemplate>();
-		SqlTemplates templates = SqlTemplateParser.fromXML(content);
-		for (SqlTemplate sqlTemplate : templates.getTemplates()) {
-			sqlTemplate.setLastModified(new Date().getTime());
-			sqlTemplate.setTplFilePath("");
-			list.add(sqlTemplate);
-		}
-		return list;
 	}
 
 	public static List<SqlTemplate> parseTemplate(File file) {
@@ -200,6 +201,12 @@ public class SqlTemplateLoaderFactory implements FactoryBean<SqlTemplateLoader>,
 		return sqlTemplateLoader;
 	}
 
+	/**
+	 * @param relocateTo the relocateTo to set
+	 */
+	public void setRelocateTo(String relocateTo) {
+		this.relocateTo = relocateTo;
+	}
 
 	public static class SqlTemplateLoader extends StringTemplateLoader {
 
@@ -265,7 +272,6 @@ public class SqlTemplateLoaderFactory implements FactoryBean<SqlTemplateLoader>,
 		public void setTemplates(List<SqlTemplate> templates) {
 			this.templates = templates;
 		}
-
 
 	}
 
