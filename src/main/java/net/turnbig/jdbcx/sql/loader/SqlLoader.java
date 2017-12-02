@@ -153,7 +153,7 @@ public class SqlLoader {
 			throw new RuntimeException(e);
 		}
 	}
-
+	
 	public void setTemplateEncoding(String templateEncoding) {
 		this.templateEncoding = templateEncoding;
 	}
