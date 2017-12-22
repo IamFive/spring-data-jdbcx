@@ -31,9 +31,11 @@ import net.turnbig.jdbcx.utilities.JsonMapper;
 public class PGObjectConverter implements ConditionalGenericConverter {
 
 	private ConversionService conversionService;
+	private JsonMapper mapper;
 
 	public PGObjectConverter(ConversionService conversionService) {
 		this.conversionService = conversionService;
+		this.mapper = JsonMapper.nonEmptyMapper();
 	}
 
 	/*
@@ -66,14 +68,13 @@ public class PGObjectConverter implements ConditionalGenericConverter {
 				if ("jsonb".equals(type) || "json".equals(type)) {
 					ResolvableType resolvableType = targetType.getResolvableType();
 					if (resolvableType.getRawClass().isAssignableFrom(Map.class)) {
-						HashMap<String, Object> mapBean = JsonMapper.nonEmptyMapper().getMapBean(value, String.class,
-								Object.class);
+						HashMap<String, Object> mapBean = mapper.getMapBean(value, String.class, Object.class);
 						return mapBean;
 					} else if (resolvableType.getRawClass().isAssignableFrom(List.class)) {
-						List<Object> mapBean = JsonMapper.nonEmptyMapper().getListBean(value, Object.class);
+						List<Object> mapBean = mapper.getListBean(value, Object.class);
 						return mapBean;
 					} else {
-						Object bean = JsonMapper.nonEmptyMapper().getBean(value, resolvableType.getRawClass());
+						Object bean = mapper.getBean(value, resolvableType.getRawClass());
 						return bean;
 					}
 				} else {

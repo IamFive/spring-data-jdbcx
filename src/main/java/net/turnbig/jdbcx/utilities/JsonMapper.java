@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.deser.std.DateDeserializers.DateDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -66,6 +67,8 @@ public class JsonMapper {
 
 		// 设置输入时忽略在JSON字符串中存在但Java对象实际没有的属性
 		mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+		
+		mapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
 	}
 
 	/**
@@ -110,7 +113,6 @@ public class JsonMapper {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	public <T> List<T> getListBean(String jsonString, Class<T> beanClazz) {
 		try {
 			JavaType typeRef = TypeFactory.defaultInstance().constructParametricType(List.class, beanClazz);
