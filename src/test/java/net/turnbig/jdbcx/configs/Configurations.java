@@ -20,8 +20,8 @@ package net.turnbig.jdbcx.configs;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
@@ -30,35 +30,37 @@ import net.turnbig.jdbcx.convertor.PGConversionServiceFactoryBean;
 
 /**
  * @author Woo Cupid
- * @date 2016年1月21日
  * @version $Revision$
+ * @date 2016年1月21日
  */
 @Component
 public class Configurations {
 
-	@org.springframework.context.annotation.Configuration
-	public static class SpiedDatasourceConfig {
+    @org.springframework.context.annotation.Configuration
+    public static class SpiedDatasourceConfig {
 
-		@Autowired
-		private DataSourceProperties properties;
+        @Autowired
+        private DataSourceProperties properties;
 
-		@Bean
-		public DataSource dataSourceSpied() {
-			DataSourceBuilder factory = DataSourceBuilder.create(this.properties.getClassLoader())
-					.driverClassName(this.properties.getDriverClassName()).url(this.properties.getUrl())
-					.username(this.properties.getUsername()).password(this.properties.getPassword());
-			return new DataSourceSpy(factory.build());
-			// return factory.build();
-		}
-	}
+        @Bean
+        public DataSource dataSourceSpied() {
+            DataSourceBuilder factory = DataSourceBuilder.create(this.properties.getClassLoader())
+                                                         .driverClassName(this.properties.getDriverClassName())
+                                                         .url(this.properties.getUrl())
+                                                         .username(this.properties.getUsername())
+                                                         .password(this.properties.getPassword());
+            return new DataSourceSpy(factory.build());
+            // return factory.build();
+        }
+    }
 
-	@org.springframework.context.annotation.Configuration
-	public static class JdbcxConversionService {
-		@Bean
-		public PGConversionServiceFactoryBean jdbcxConversionService() {
-			PGConversionServiceFactoryBean factoryBean = new PGConversionServiceFactoryBean();
-			return factoryBean;
-		}
-	}
+    @org.springframework.context.annotation.Configuration
+    public static class JdbcxConversionService {
+        @Bean
+        public PGConversionServiceFactoryBean jdbcxConversionService() {
+            PGConversionServiceFactoryBean factoryBean = new PGConversionServiceFactoryBean();
+            return factoryBean;
+        }
+    }
 
 }

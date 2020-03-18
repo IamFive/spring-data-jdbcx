@@ -54,7 +54,7 @@ public class Slf4jLog4jdbcDelegator extends Slf4jSpyLogDelegator {
 	public void exceptionOccured(Spy spy, String methodCall, Exception e, String sql, long execTime) {
 		if (e instanceof SQLFeatureNotSupportedException) {
 			// disable not support feature exception
-		} else if (e.getMessage().contains("unsupported")) {
+		} else if (e.getMessage().contains("unsupported") || e.getMessage().contains("not supported")) {
 			// disable not support message
 		} else {
 			super.exceptionOccured(spy, methodCall, e, sql, execTime);

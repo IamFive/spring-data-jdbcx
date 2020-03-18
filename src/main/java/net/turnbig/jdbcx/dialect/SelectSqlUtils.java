@@ -222,7 +222,7 @@ public class SelectSqlUtils {
 		}
 
 		if (list.size() > 0) {
-			Sort sort = new Sort(list);
+			Sort sort = Sort.by(list);
 			return addSort(sql, sort);
 		}
 
@@ -297,7 +297,6 @@ public class SelectSqlUtils {
 			xxxxx
 		) tmp
 	 * @param select
-	 * @param sb
 	 * @return
 	 */
 	private static String getCountSqlWithTempTable(Select select) {
@@ -344,7 +343,6 @@ public class SelectSqlUtils {
 	 * 
 	 * /we just leave illegal situation to users ?
 		do we need to check whether a SQL could be count or not ?
-	 * @param sql
 	 * @param sb
 	 */
 	public static void delOrderBy(SelectBody sb) {

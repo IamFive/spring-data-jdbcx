@@ -73,14 +73,14 @@ public class JdbcxPagingTest extends H2Env {
 
 	@Test
 	public void testQueryPagedListBean() {
-		PageRequest pr = new PageRequest(0, 10);
+		PageRequest pr = PageRequest.of(0, 10);
 		Page<Member> members = jdbc.queryForListBean("select * from member where name like 'batched%'", Member.class, pr);
 		Assert.assertEquals("name like batch get 10 record", members.getSize(), 10);
 		Assert.assertEquals("name like batch get 10 record", members.getTotalElements(), 200);
 		Assert.assertEquals("name like batch get 10 record", members.getTotalPages(), 20);
 		
 		
-		PageRequest pr2 = new PageRequest(1, 20, new Sort(new Order(Direction.ASC, "id")));
+		PageRequest pr2 = PageRequest.of(1, 20, Sort.by(new Order(Direction.ASC, "id")));
 		Page<Map<String, Object>> members2 = jdbc.queryForListMap("select * from member where name like 'batched%'",  pr2);
 		Assert.assertEquals("name like batch get 20 record", members2.getSize(), 20);
 		Assert.assertEquals("name like batch get 200 total", members2.getTotalElements(), 200);

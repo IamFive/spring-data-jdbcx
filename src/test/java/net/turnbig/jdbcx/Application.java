@@ -29,7 +29,7 @@ public class Application implements CommandLineRunner {
 	private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
 	public static void main(String[] args) {
-		SpringApplication.run(new Object[] { Application.class }, args);
+		SpringApplication.run(new Class[] { Application.class }, args);
 	}
 
 	/*

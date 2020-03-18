@@ -25,8 +25,8 @@ public class PageableTest {
 	
 	@Test
 	public void offsetTest() {
-		PageRequest pr = new PageRequest(1, 10);
-		int offset = pr.getOffset();
+		PageRequest pr = PageRequest.of(1, 10);
+		long offset = pr.getOffset();
 		int pageNumber = pr.getPageNumber();
 		int limit = pr.getPageSize();
 		logger.info("offset : {}, page number : {}", offset, pageNumber);

@@ -33,7 +33,7 @@ public class SelectSqlUtilsTest {
 	public void plainSelectAddOrderByTest() throws JSQLParserException {
 		String sql = "select * from member order by id asc, name desc limit 1 offset 2";
 		String handledSql = SelectSqlUtils.addSort(sql,
-				new Sort(Lists.newArrayList(new Order(Direction.DESC, "age"), new Order(Direction.ASC, "weight"))));
+				Sort.by(Lists.newArrayList(new Order(Direction.DESC, "age"), new Order(Direction.ASC, "weight"))));
 		String handledSql2 = SelectSqlUtils.addSort(sql, "age desc", "weight asc");
 		Assert.assertEquals(handledSql.toLowerCase(),
 				"select * from member order by id asc, name desc, age DESC, weight ASC limit 1 offset 2".toLowerCase());
@@ -46,7 +46,7 @@ public class SelectSqlUtilsTest {
 	public void setSelectAddOrderByTest() throws JSQLParserException {
 		String sql = "(select * from member) union all (select * from member2 order by name desc) order by id asc, name desc limit 1 offset 2";
 		String handledSql = SelectSqlUtils.addSort(sql,
-				new Sort(Lists.newArrayList(new Order(Direction.DESC, "age"), new Order(Direction.ASC, "weight"))));
+				Sort.by(Lists.newArrayList(new Order(Direction.DESC, "age"), new Order(Direction.ASC, "weight"))));
 		String handledSql2 = SelectSqlUtils.addSort(sql, "age desc", "weight asc");
 		Assert.assertEquals(handledSql.toLowerCase(),
 				"(select * from member) union all (select * from member2 order by name desc) order by id asc, name desc, age DESC, weight ASC limit 1 offset 2"
@@ -70,7 +70,7 @@ public class SelectSqlUtilsTest {
 	@Test
 	public void getPageableSqlTest() throws JSQLParserException {
 		String sql = "with a as (select * from level limit 10) select name, count(0) from member, a where id > 10 and level = a.level group by name FOR UPDATE";
-		PageRequest pageRequest = new PageRequest(5, 10);
+		PageRequest pageRequest = PageRequest.of(5, 10);
 		String pagedSql = SelectSqlUtils.getPageableSqlWithLimitOffset(sql, pageRequest);
 		logger.info("{}", pagedSql);
 	}

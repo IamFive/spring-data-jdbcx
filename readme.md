@@ -9,7 +9,7 @@ You can download from maven central, add dependency to your pom.xml
 	<dependency>
 		<groupId>net.turnbig</groupId>
 		<artifactId>spring-data-jdbcx</artifactId>
-		<version>2.0.4</version>
+		<version>2.0.6</version>
 	</dependency>
 ```
 

@@ -39,9 +39,9 @@ public class PaginationHelper {
 				boolean isDesc = StringUtils.startsWith(s, "-");
 				String field = isDesc ? StringUtils.removeStart(s, "-") : s;
 				if (sort == null) {
-					sort = new Sort(isDesc ? Direction.DESC : Direction.ASC, field);
+					sort = Sort.by(isDesc ? Direction.DESC : Direction.ASC, field);
 				} else {
-					sort = sort.and(new Sort(isDesc ? Direction.DESC : Direction.ASC, field));
+					sort = sort.and(Sort.by(isDesc ? Direction.DESC : Direction.ASC, field));
 				}
 			}
 		}
@@ -65,9 +65,9 @@ public class PaginationHelper {
 		PageRequest pageRequest = null;
 		Sort sort = buildSortBy(sortby);
 		if (sort != null) {
-			pageRequest = new PageRequest(Integer.parseInt(page) - 1, Integer.parseInt(size), sort);
+			pageRequest = PageRequest.of(Integer.parseInt(page) - 1, Integer.parseInt(size), sort);
 		} else {
-			pageRequest = new PageRequest(Integer.parseInt(page) - 1, Integer.parseInt(size));
+			pageRequest = PageRequest.of(Integer.parseInt(page) - 1, Integer.parseInt(size));
 		}
 
 		return pageRequest;
